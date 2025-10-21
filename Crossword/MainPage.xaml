@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:Crossword.Views"
              xmlns:utils="clr-namespace:Crossword.Utils"
+             xmlns:controls="clr-namespace:Crossword.Controls"
              BackgroundColor="Wheat"
              x:Class="Crossword.MainPage">
     <ContentPage.BindingContext>
@@ -11,20 +12,20 @@
     <ScrollView>
         <VerticalStackLayout>
             <!--LettersView-->
-            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*" 
+            <!--<Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*" 
                   RowDefinitions="*,*,*" 
                   BindableLayout.ItemsSource="{Binding Letters}" 
                   HorizontalOptions="Center"
                   BackgroundColor="Transparent">
                 <BindableLayout.ItemTemplate >
                     <DataTemplate >
-                        <!--<Border Background="Black" 
+                        --><!--<Border Background="Black" 
                     Grid.Column="{Binding X}"
                     Grid.Row="{Binding Y}"
                     HorizontalOptions="Start"
                     VerticalOptions="Start" 
                     MinimumWidthRequest="20" 
-                    MinimumHeightRequest="20">-->
+                    MinimumHeightRequest="20">--><!--
                         <Button Text="{Binding Name}"
                                      Grid.Column="{Binding X}"
                                      Grid.Row="{Binding Y}"
@@ -41,9 +42,18 @@
 
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
-            </Grid>
+            </Grid>-->
+            
+            <controls:Keyboard x:Name="keyboard"
+                           HorizontalOptions="Center"
+                           Margin="0,10,0,0"
+                           GridColumns="9"
+                           GridRows="3"
+                           Keys="{Binding Letters}"
+                           LetterCommand="{Binding Clickced}"/>
+            
             <!--CrosswordView-->
-
+            
             <CollectionView ItemsSource="{Binding Excercies}"
                              ItemSizingStrategy="MeasureAllItems"
                             VerticalScrollBarVisibility="Never"

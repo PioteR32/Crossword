@@ -2,11 +2,12 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:utils="clr-namespace:Crossword.Utils"
-             x:Class="Crossword.Controls.Keyboard">
+             x:Class="Crossword.Controls.Keyboard"
+             x:Name="root">
     <Grid
-        utils:GridHelpers.ColumnCount="9"
-        utils:GridHelpers.RowCount="3"
-       
+        utils:GridHelpers.ColumnCount="{Binding GridColumns ,Source={x:Reference root}}"
+        utils:GridHelpers.RowCount="{Binding GridRows ,Source={x:Reference root}}"
+       BindableLayout.ItemsSource="{Binding Keys, Source={x:Reference root}}"
        HorizontalOptions="Center"
        BackgroundColor="Transparent">
         <BindableLayout.ItemTemplate >
@@ -28,8 +29,8 @@
          BorderWidth="2"
          HorizontalOptions="Center"
          VerticalOptions="Center"
-         Command="{Binding Clickced}"
-         CommandParameter="{Binding SelectedExcercie ,Source={x:Reference view}}"
+         Command="{Binding LetterCommand ,Source={x:Reference root}}"
+         CommandParameter="{Binding .}"
         />
 
             </DataTemplate>

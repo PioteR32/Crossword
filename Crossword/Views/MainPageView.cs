@@ -1,4 +1,5 @@
 ﻿
+using Crossword.src;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Crossword.src;
+
 namespace Crossword.Views
 {
 	public class MainPageView:BindableObject
@@ -74,9 +75,10 @@ namespace Crossword.Views
 				new LetterView("m", 2, 6),
 				new LetterView("<--", 2, 7),
 			};
+			Clickced = new Command<LetterView>(AddLetter);
 			NumberOfGridColumns = 10;
 		}
-
+		public ICommand Clickced { get; private set; }
 		public ICommand FocuseButton { get; private set; }
 		public ICommand CheckAnswers { get; private set; }
 		int goodAnswers = 0;
@@ -96,6 +98,26 @@ namespace Crossword.Views
 
 				if (ans == exc.CorrectAnswer)
 					GoodAnswers++;
+			}
+		}
+		void AddLetter(LetterView letter)
+		{
+			ExcercieView excercie = SelectedExcercie;
+			if (excercie != null)
+			{
+				if (excercie.IsChecked == true)
+				{
+					if (letter.Name == "<--")
+					{
+						if (excercie.ActualPositionInTable != 0)
+							excercie.Answer[excercie.ActualPositionInTable - 1].Character = '\0';
+					}
+					else if (excercie.ActualPositionInTable < excercie.CorrectAnswer.Length)
+					{
+						excercie.Answer[excercie.ActualPositionInTable].Character = letter.Character;
+					}
+				}
+
 			}
 		}
 	}
