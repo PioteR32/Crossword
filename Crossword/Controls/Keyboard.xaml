@@ -4,21 +4,21 @@
              xmlns:utils="clr-namespace:Crossword.Utils"
              x:Class="Crossword.Controls.Keyboard"
              x:Name="root">
-    <Grid
+    <!--<Grid
         utils:GridHelpers.ColumnCount="{Binding GridColumns ,Source={x:Reference root}}"
         utils:GridHelpers.RowCount="{Binding GridRows ,Source={x:Reference root}}"
-       BindableLayout.ItemsSource="{Binding Keys, Source={x:Reference root}}"
+       BindableLayout.ItemsSource="{Binding KeysList, Source={x:Reference root}}"
        HorizontalOptions="Center"
        BackgroundColor="Transparent">
         <BindableLayout.ItemTemplate >
             <DataTemplate >
-                <!--<Border Background="Black" 
+                --><!--<Border Background="Black" 
          Grid.Column="{Binding X}"
          Grid.Row="{Binding Y}"
          HorizontalOptions="Start"
          VerticalOptions="Start" 
          MinimumWidthRequest="20" 
-         MinimumHeightRequest="20">-->
+         MinimumHeightRequest="20">--><!--
                 <Button Text="{Binding Name}"
                           Grid.Column="{Binding X}"
                           Grid.Row="{Binding Y}"
@@ -35,5 +35,36 @@
 
             </DataTemplate>
         </BindableLayout.ItemTemplate>
-    </Grid>
+    </Grid>-->
+    <VerticalStackLayout
+       BindableLayout.ItemsSource="{Binding LetterViews, Source={x:Reference root}}"
+       HorizontalOptions="Center"
+       BackgroundColor="Transparent">
+        <BindableLayout.ItemTemplate >
+            <DataTemplate >
+                <HorizontalStackLayout
+                    BindableLayout.ItemsSource="{Binding .}"
+                    HorizontalOptions="Center"
+                    BackgroundColor="Transparent">
+                    <BindableLayout.ItemTemplate >
+                        <DataTemplate >
+                            <Button Text="{Binding Name}"
+                                Grid.Column="{Binding X}"
+                                Grid.Row="{Binding Y}"
+                                CornerRadius="0"  
+                                TextColor="Black"
+                                Background="White"
+                                BorderColor="Transparent"
+                                BorderWidth="2"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Command="{Binding LetterCommand ,Source={x:Reference root}}"
+                                CommandParameter="{Binding .}"
+                                 />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                 </HorizontalStackLayout>
+            </DataTemplate>
+        </BindableLayout.ItemTemplate>
+    </VerticalStackLayout>
 </ContentView>

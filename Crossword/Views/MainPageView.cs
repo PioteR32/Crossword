@@ -1,5 +1,6 @@
 ﻿
 using Crossword.src;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -75,6 +76,7 @@ namespace Crossword.Views
 				new LetterView("m", 2, 6),
 				new LetterView("<--", 2, 7),
 			};
+			
 			Clickced = new Command<LetterView>(AddLetter);
 			NumberOfGridColumns = 10;
 		}
@@ -103,6 +105,7 @@ namespace Crossword.Views
 		void AddLetter(LetterView letter)
 		{
 			ExcercieView excercie = SelectedExcercie;
+			Letters[0] = new LetterView("a", Letters[0].X, Letters[0].Y);
 			if (excercie != null)
 			{
 				if (excercie.IsChecked == true)

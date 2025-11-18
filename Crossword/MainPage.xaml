@@ -49,7 +49,7 @@
                            Margin="0,10,0,0"
                            GridColumns="9"
                            GridRows="3"
-                           Keys="{Binding Letters}"
+                           KeysList="{Binding Letters}"
                            LetterCommand="{Binding Clickced}"/>
             
             <!--CrosswordView-->
