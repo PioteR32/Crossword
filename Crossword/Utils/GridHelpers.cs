@@ -36,7 +36,7 @@ namespace Crossword.Utils
 
 			for (int i = 0; i < (int)newValue; i++)
 				grid.RowDefinitions.Add(
-					new RowDefinition() { Height = GridLength.Auto });
+					new RowDefinition() { Height = GridLength.Star });
 		}
 
 		#endregion
@@ -75,7 +75,7 @@ namespace Crossword.Utils
 
 			for (int i = 0; i < (int)newValue; i++)
 				grid.ColumnDefinitions.Add(
-					new ColumnDefinition() { Width = GridLength.Auto });
+					new ColumnDefinition() { Width = GridLength.Star });
 		}
 
 		#endregion

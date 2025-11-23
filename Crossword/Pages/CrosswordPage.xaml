@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Crossword.Views"
+             xmlns:utils="clr-namespace:Crossword.Utils"
+             xmlns:controls="clr-namespace:Crossword.Controls"
+             xmlns:converters="clr-namespace:Crossword.Converters"
+             BackgroundColor="Wheat"
+             x:Class="Crossword.Pages.CrosswordPage">
+    <ContentPage.BindingContext>
+        <views:CrosswordPageView x:Name="view"/>
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout>
+
+            <controls:Keyboard x:Name="keyboard"
+                           HorizontalOptions="Center"
+                           Margin="0,10,0,0"
+                           GridColumns="9"
+                           GridRows="3"
+                           KeysList="{Binding Letters}"
+                           LetterCommand="{Binding Clickced}"/>
+
+            <!--CrosswordView-->
+
+            <CollectionView ItemsSource="{Binding Excercies}"
+                             ItemSizingStrategy="MeasureAllItems"
+                            VerticalScrollBarVisibility="Never"
+                            ItemsUpdatingScrollMode="KeepItemsInView"
+                            Margin="0,10,100,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*,*" >
+                            <Label Text="{Binding NumberOfQuestion ,StringFormat='{0}.'}"
+                                   TextColor="Black" 
+                                   BackgroundColor="Transparent" 
+                                   HorizontalOptions="End"
+                                   VerticalOptions="End"
+                                   MinimumWidthRequest="100"
+                                   Grid.Column="0"
+                                   FontSize="20"/>
+                            <Grid utils:GridHelpers.ColumnCount="{Binding GridColumnCount}"
+                                RowDefinitions="*"
+                                BindableLayout.ItemsSource="{Binding Answer}"
+                                  
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                HorizontalOptions="Start"
+                                x:Name="gridExcercie">
+
+                                <BindableLayout.ItemTemplate >
+                                    <DataTemplate >
+                                        <Button Text="{Binding Character}"
+                                          CornerRadius="0"
+                                            BorderColor="White"
+                                            BorderWidth="1"
+                                          Grid.Column="{Binding Index}"
+                                          HorizontalOptions="Start"
+                                          VerticalOptions="Start"
+                                          FontSize="20"
+                                          Background="Black"
+                                          TextColor="White"
+                                          Command="{Binding FocuseButton,Source={x:Reference view}}"
+                                          CommandParameter="{Binding BindingContext ,Source={x:Reference gridExcercie}}"
+                                            >
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button"
+                                                                 Binding="{Binding Character,Converter={converters:BlankLetterCharacterConverter}}"
+                                                                 Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderColor" Value="Transparent"/>
+                                                    <Setter Property="TextColor" Value="Transparent"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Button"
+                                                                Binding="{Binding Index,Converter={converters:IndexEqualsConverter},ConverterParameter={x:Reference view}}"
+                                                                Value="True">
+                                                    <Setter Property="Background" Value="Red"/>
+                                                    <Setter Property="BorderColor" Value="White"/>
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate >
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <CollectionView ItemsSource="{Binding Excercies}"
+                             ItemSizingStrategy="MeasureAllItems"
+                            VerticalScrollBarVisibility="Never"
+                            ItemsUpdatingScrollMode="KeepItemsInView"
+                            Margin="0,10,100,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <HorizontalStackLayout Spacing="100">
+                            <Label Text="{Binding NumberOfQuestion,StringFormat='{0}.'}"
+                                   TextColor="Black" 
+                                   BackgroundColor="Transparent" 
+                                   FontSize="Body"/>
+                            <Label Text="{Binding Question}" 
+                                       TextColor="Black" 
+                                       BackgroundColor="Transparent" 
+                                       FontSize="Body"/>
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

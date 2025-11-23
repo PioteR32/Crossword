@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Crossword.Views"
+             xmlns:utils="clr-namespace:Crossword.Utils"
+             xmlns:controls="clr-namespace:Crossword.Controls"
+             xmlns:converters="clr-namespace:Crossword.Converters"
+             x:Class="Crossword.Pages.AddCrosswordKeysPage"
+             Title="AddCrosswordKeysPage"
+             BackgroundColor="Wheat"
+             >
+    <ContentPage.BindingContext>
+        <views:AddCrosswordKeyPageView x:Name="view"/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage"
+                     Binding="{Binding UserDeletingExcercies}"
+                     Value="True"
+                     >
+            <Setter Property="BackgroundColor" Value="Gray"/>
+        </DataTrigger>
+    </ContentPage.Triggers>
+    
+    
+    <VerticalStackLayout>
+        
+        <Entry Placeholder="Question" Text="{Binding Question}"/>
+        <Entry Placeholder="Answer" Text="{Binding Answer}"/>
+        <Entry Placeholder="Topics: np. topic,topic2" Text="{Binding Topics}"/>
+        <Button Text="Add new crosword excercie" Command="{Binding AddEcxcercieCommand}"/>
+        <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
+        <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
+        <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
+        
+        <CollectionView ItemsSource="{Binding Excercies}" HeightRequest="100" Margin="20">
+            <CollectionView.Header>
+                <Grid ColumnDefinitions="*,*,*"
+                      RowDefinitions="*">
+                    <Label Text="Question"/>
+                    <Label Text="Answer" Grid.Column="1"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*,*"
+                          RowDefinitions="*">
+                        <Entry Text="{Binding Question}" />
+                        <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
+                        <Button Text="Remove"
+                           IsVisible="{Binding UserDeletingExcercies,Source={x:Reference view}}" 
+                                Command="{Binding AddToDeleteEcxcercieCommand,Source={x:Reference view}}"
+                                CommandParameter="{Binding .}"
+                                Grid.Column="2">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    TargetType="Button"
+                                    Binding="{Binding IsToRemove}"
+                                    Value="True">
+                                    <Setter Property="BackgroundColor" Value="Red"/>
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout> 
+</ContentPage>

@@ -4,11 +4,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Crossword"
+    xmlns:pages="clr-namespace:Crossword.Pages"
     Title="Crossword">
 
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
+    <ShellContent Title="Crossword" ContentTemplate="{DataTemplate pages:CrosswordPage}" />
+    <ShellContent Title="Add Crossword Keys Page" ContentTemplate="{DataTemplate pages:AddCrosswordKeysPage}" />
 </Shell>
