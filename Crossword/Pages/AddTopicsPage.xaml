@@ -9,9 +9,13 @@
              Title="AddTopicsPage"
              BackgroundColor="Wheat">
     <ContentPage.BindingContext>
-        <views:
+        <views:AddTopicPageView/>
     </ContentPage.BindingContext>
     <VerticalStackLayout>
-        
+        <Entry Text="{Binding Topic}"/>
+        <Button Text="Add new crosword excercie" Command="{Binding AddEcxcercieCommand}"/>
+        <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
+        <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
+        <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
     </VerticalStackLayout>
 </ContentPage>

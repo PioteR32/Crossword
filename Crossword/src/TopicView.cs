@@ -11,7 +11,7 @@ namespace Crossword.src
 		public string Topic { get; set; }
 		public TopicView(string topic) { Topic = topic; }
 		bool isToRemove = false;
-		bool IsToRemove 
+        public bool IsToRemove 
 		{
 			get => isToRemove;
 			set

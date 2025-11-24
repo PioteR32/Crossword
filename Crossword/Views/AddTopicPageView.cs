@@ -1,4 +1,5 @@
-﻿using Crossword.src;
+﻿
+using Crossword.src;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,42 @@ namespace Crossword.Views
 	{
 		public AddTopicPageView()
 		{
-			Excercies = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics));
+            AddTopicCommand = new Command(() =>
+            {
+                if (Topic == "" || Topic == null ) return;
+
+                if (!Topics.Any(e => e.Topic == Topic.ToLower()))
+                {
+                    Topics.Add(new TopicView(Topic.ToLower()));
+                }
+            });
+            AddToDeleteTopicCommand = new Command<TopicView>((e) =>
+            {
+                e.IsToRemove = !e.IsToRemove;
+                var excercie = ExcerciesesToDelete.Find(ex => ex.Topic == e.Topic);
+
+                if (excercie == null)
+                    ExcerciesesToDelete.Add(e);
+                else
+                    ExcerciesesToDelete.Remove(excercie);
+            });
+
+            DeleteTopicCommand = new Command(() =>
+            {
+                UserDeletingTopics = !UserDeletingTopics;
+
+                foreach (var excercie in ExcerciesesToDelete)
+                {
+                    excercie.IsToRemove = false;
+                    Topics.Remove(excercie);
+                }
+
+                ExcerciesesToDelete.Clear();
+            });
+            DeleteChangesCommand = new Command(async () => Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics)));
+
+            SaveChangesCommand = new Command(() => AppData.SaveTopics(Topics));
+            Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics));
 		}
 		static IEnumerable<TopicView> CopyTopicViews(IEnumerable<TopicView> excercies)
 		{
@@ -25,61 +61,41 @@ namespace Crossword.Views
 			return returnList;
 		}
 
-		public bool userDeletingExcercies = false;
-		public bool UserDeletingExcercies
+		public bool userDeletingTopics = false;
+		public bool UserDeletingTopics
 		{
-			get => userDeletingExcercies;
+			get => userDeletingTopics;
 			set
 			{
-				userDeletingExcercies = value;
+				userDeletingTopics = value;
 				OnPropertyChanged();
 			}
 		}
 		public List<TopicView> ExcerciesesToDelete = new List<TopicView>();
-		private ObservableCollection<TopicView> excercies;
-		public ObservableCollection<TopicView> Excercies
-		{
-			get => excercies;
-			private set
-			{
-				excercies = value;
-				OnPropertyChanged();
-			}
-		}
-		string question;
-		public string Question
-		{
-			get => question;
-			set
-			{
-				question = value.Trim(Global.BlankLetterChar);
-				OnPropertyChanged();
-			}
-		}
-
-		string answer;
-		public string Answer
-		{
-			get => answer;
-			set
-			{
-				answer = value.Trim(Global.BlankLetterChar);
-				OnPropertyChanged();
-			}
-		}
-		string topics;
-		public string Topics
+		private ObservableCollection<TopicView> topics;
+		public ObservableCollection<TopicView> Topics
 		{
 			get => topics;
-			set
+			private set
 			{
 				topics = value;
 				OnPropertyChanged();
 			}
 		}
-		public ICommand AddEcxcercieCommand { get; set; }
-		public ICommand DeleteEcxcerciesCommand { get; set; }
-		public ICommand AddToDeleteEcxcercieCommand { get; set; }
+		string topic;
+		public string Topic
+		{
+			get => topic;
+			set
+			{
+				topic = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public ICommand AddTopicCommand { get; set; }
+		public ICommand DeleteTopicCommand { get; set; }
+		public ICommand AddToDeleteTopicCommand { get; set; }
 		public ICommand SaveChangesCommand { get; set; }
 		public ICommand DeleteChangesCommand { get; set; }
 	}

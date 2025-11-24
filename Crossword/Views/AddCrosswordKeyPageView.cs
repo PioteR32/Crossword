@@ -50,7 +50,7 @@ namespace Crossword.Views
 			});
 			DeleteChangesCommand = new Command(async () => Excercies = new ObservableCollection<ExcercieView>(CopyExcercieViews(AppData.Excercies)));
 
-			SaveChangesCommand = new Command(() => AppData.SaveChanges(Excercies));
+			SaveChangesCommand = new Command(() => AppData.SaveExcercies(Excercies));
 
 			Excercies = new ObservableCollection<ExcercieView>(CopyExcercieViews(AppData.Excercies));
 		}
