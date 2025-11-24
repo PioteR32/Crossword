@@ -27,7 +27,7 @@
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="*,*"
+                    <!--<Grid ColumnDefinitions="*,*"
                    RowDefinitions="*">
                         <Label Text="{Binding Topic}"/>
                         <Button Text="Remove"
@@ -44,7 +44,14 @@
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
-                    </Grid>
+                    </Grid>-->
+                    <controls:TopicControl
+                        Topic="{Binding Topic}"
+                        IsToRemove="{Binding IsToRemove}"
+                        TopicCommand="{Binding AddToDeleteTopicCommand,Source={x:Reference view}}"
+                        IsVisibleRemoveButton="{Binding  UserDeletingTopics,Source={x:Reference view}}"
+                        
+                        />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

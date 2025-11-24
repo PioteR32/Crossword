@@ -73,7 +73,7 @@
 	  <MauiXaml Update="Controls\Keyboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Controls\TopicView.xaml">
+	  <MauiXaml Update="Controls\TopicControl.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\AddCrosswordKeysPage.xaml">
@@ -88,9 +88,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Controls\Views\" />
 	  <Folder Include="DataBase\" />
 	  <Folder Include="Entities\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Controls\TopicControl.xaml.cs">
+	    <DependentUpon>TopicControl.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>
