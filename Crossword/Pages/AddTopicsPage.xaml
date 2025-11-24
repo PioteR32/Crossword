@@ -9,13 +9,44 @@
              Title="AddTopicsPage"
              BackgroundColor="Wheat">
     <ContentPage.BindingContext>
-        <views:AddTopicPageView/>
+        <views:AddTopicPageView x:Name="view"/>
     </ContentPage.BindingContext>
     <VerticalStackLayout>
         <Entry Text="{Binding Topic}"/>
-        <Button Text="Add new crosword excercie" Command="{Binding AddEcxcercieCommand}"/>
-        <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
+        <Button Text="Add new crosword excercie" Command="{Binding AddTopicCommand}"/>
+        <Button Text="Remove excercie" Command="{Binding DeleteTopicCommand}"/>
         <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
         <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
+
+        <CollectionView ItemsSource="{Binding Topics}" HeightRequest="100" Margin="20">
+            <CollectionView.Header>
+                <Grid ColumnDefinitions="*,*"
+               RowDefinitions="*">
+                    <Label Text="Topics"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*"
+                   RowDefinitions="*">
+                        <Label Text="{Binding Topic}"/>
+                        <Button Text="Remove"
+                    IsVisible="{Binding UserDeletingTopics,Source={x:Reference view}}" 
+                         Command="{Binding AddToDeleteTopicCommand,Source={x:Reference view}}"
+                         CommandParameter="{Binding .}"
+                         Grid.Column="1">
+                            <Button.Triggers>
+                                <DataTrigger
+                             TargetType="Button"
+                             Binding="{Binding IsToRemove}"
+                             Value="True">
+                                    <Setter Property="BackgroundColor" Value="Red"/>
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>

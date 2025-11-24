@@ -44,7 +44,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="*,*,*"
-                          RowDefinitions="*">
+                          RowDefinitions="*,*">
                         <Entry Text="{Binding Question}" />
                         <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
                         <Button Text="Remove"
@@ -61,6 +61,13 @@
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
+                        <CollectionView ItemsSource="{Binding TopicsViews}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                   
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

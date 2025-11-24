@@ -73,6 +73,9 @@
 	  <MauiXaml Update="Controls\Keyboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Controls\TopicView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\AddCrosswordKeysPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
