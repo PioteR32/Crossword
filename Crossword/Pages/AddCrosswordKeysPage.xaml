@@ -32,7 +32,14 @@
         <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
         <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
         <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
-        
+        <CollectionView ItemsSource="{Binding Topics}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                     <!--add command to check right topics-->
+                    <Button Text="{Binding .}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
         <CollectionView ItemsSource="{Binding Excercies}" HeightRequest="100" Margin="20">
             <CollectionView.Header>
                 <Grid ColumnDefinitions="*,*,*"
@@ -45,7 +52,7 @@
                 <DataTemplate>
                     <Grid ColumnDefinitions="*,*,*"
                           RowDefinitions="*,*">
-                        <Entry Text="{Binding Question}" />
+                        <Entry Text="{Binding Question}" x:Name="firstEntry"/>
                         <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
                         <Button Text="Remove"
                            IsVisible="{Binding UserDeletingExcercies,Source={x:Reference view}}" 
@@ -64,7 +71,12 @@
                         <CollectionView ItemsSource="{Binding TopicsViews}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                   
+                                    <controls:TopicControl
+                                        Topic="{Binding Topic}"
+                                        IsToRemove="{Binding IsToRemove}"
+                                        IsVisibleRemoveButton="{Binding IsVisibleButton}"
+                                        TopicCommand="{Binding BindingContext.}"
+                                        />
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>

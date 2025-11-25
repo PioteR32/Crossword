@@ -20,5 +20,14 @@ namespace Crossword.src
 				OnPropertyChanged();
 			}
 		}
+		bool isVisibleButton = false;
+		public bool IsVisibleButton
+		{
+			get => isVisibleButton;
+			set
+			{
+				isVisibleButton = value; OnPropertyChanged();
+			}
+		}
 	}
 }

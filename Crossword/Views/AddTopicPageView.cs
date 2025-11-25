@@ -46,9 +46,9 @@ namespace Crossword.Views
 
                 ExcerciesesToDelete.Clear();
             });
-            DeleteChangesCommand = new Command(() => Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics)));
+            DeleteTopicChangesCommand = new Command(() => Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics)));
 
-            SaveChangesCommand = new Command(() => AppData.SaveTopics(Topics));
+            SaveTopicChangesCommand = new Command(() => AppData.SaveTopics(Topics));
             Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics));
 		}
 		static IEnumerable<TopicView> CopyTopicViews(IEnumerable<TopicView> excercies)
@@ -96,7 +96,7 @@ namespace Crossword.Views
 		public ICommand AddTopicCommand { get; set; }
 		public ICommand DeleteTopicCommand { get; set; }
 		public ICommand AddToDeleteTopicCommand { get; set; }
-		public ICommand SaveChangesCommand { get; set; }
-		public ICommand DeleteChangesCommand { get; set; }
+		public ICommand SaveTopicChangesCommand { get; set; }
+		public ICommand DeleteTopicChangesCommand { get; set; }
 	}
 }

@@ -10,9 +10,9 @@ using System.Windows.Input;
 
 namespace Crossword.Views
 {
-	public class AddCrosswordKeyPageView : BindableObject
+	public class AddCrosswordKeyPageView : AddTopicPageView
 	{
-		public AddCrosswordKeyPageView()
+		public AddCrosswordKeyPageView():base()
 		{
 			AddEcxcercieCommand = new Command(() =>
 			{
@@ -21,7 +21,7 @@ namespace Crossword.Views
 				if (!Excercies.Any(e => e.CorrectAnswer == Answer.ToLower()
 					|| e.Question == Question.ToLower()))
 				{
-					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower(),topics.Split(',')));
+					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower()));
 				}
 			});
 			AddToDeleteEcxcercieCommand = new Command<ExcercieView>((e) =>
@@ -103,16 +103,6 @@ namespace Crossword.Views
 			set
 			{
 				answer = value.Trim(Global.BlankLetterChar);
-				OnPropertyChanged();
-			}
-		}
-		string topics;
-		public string Topics
-		{
-			get => topics;
-			set
-			{
-				topics = value;
 				OnPropertyChanged();
 			}
 		}

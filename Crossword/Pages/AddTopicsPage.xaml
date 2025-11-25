@@ -15,8 +15,8 @@
         <Entry Text="{Binding Topic}"/>
         <Button Text="Add new crosword excercie" Command="{Binding AddTopicCommand}"/>
         <Button Text="Remove excercie" Command="{Binding DeleteTopicCommand}"/>
-        <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
-        <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
+        <Button Text="Delete Changes" Command="{Binding DeleteTopicChangesCommand}"/>
+        <Button Text="Save Changes" Command="{Binding SaveTopicChangesCommand}"/>
 
         <CollectionView ItemsSource="{Binding Topics}" HeightRequest="100" Margin="20">
             <CollectionView.Header>
