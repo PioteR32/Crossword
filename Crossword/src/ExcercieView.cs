@@ -112,8 +112,17 @@ namespace Crossword.src
         public ICommand DeleteTopicChangesCommand { get; set; }
         public ObservableCollection<TopicView> CopyTopics { get; set; }
 
+        void CreateFunction()
+        {
+            AddTopicCommand = new Command<TopicView>(AddTopic);
+            AddToDeleteTopicCommand = new Command<TopicView>(AddToDeleteCollection);
+            DeleteTopicCommand = new Command(DeleteTopic);
+            DeleteTopicChangesCommand = new Command(DeleteTopicChanges);
+            SaveTopicChangesCommand = new Command(() => CopyTopics = new(Topics));
+        }
         public ExcercieView(string question, string correctAnswer, int startPositionInGrid) : base(question, correctAnswer, startPositionInGrid + correctAnswer.Length, 1)
         {
+            CreateFunction();
             StartPositionInGrid = startPositionInGrid;
             for (int i = 0; i < GridColumnCount; i++)
             {
@@ -123,31 +132,36 @@ namespace Crossword.src
                     Answer[i].Character = Global.BlankLetterChar;
                 }
             }
-            AddTopicCommand = new Command<TopicView>(AddTopic);
-            AddToDeleteTopicCommand = new Command<TopicView>(AddToDeleteCollection);
-            DeleteTopicCommand = new Command(DeleteTopic);
-            DeleteTopicChangesCommand = new Command(DeleteTopicChanges);
-            SaveTopicChangesCommand = new Command(() => CopyTopics = new (Topics));
+           
         }
         public ExcercieView(string question, string correctAnswer) : base(question, correctAnswer)
         {
-
+            CreateFunction();
         }
         public ExcercieView(string question, string correctAnswer, params string[] topics) : base(question, correctAnswer, topics)
         {
+            CreateFunction();
             for (int i = 0; i < topics.Length; i++)
             {
                 Topics.Add(new (topics[i]));
             }
         }
+        public ExcercieView(string question, string correctAnswer, IEnumerable<TopicView> topics) : base(question, correctAnswer, topics)
+        {
+            CreateFunction();
+            foreach (var topic in topics) 
+            {
+                Topics.Add(new (topic.Topic));
+            }
+        }
         public ExcercieView(ExcercieView ev) : base(ev.Question, ev.CorrectAnswer, ev.Topics)
         {
+            CreateFunction();
             Topics.CollectionChanged += OnTopicsViewCollectionChanged;
         }
 
         void OnTopicsViewCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-
             TopicView newTopic = (TopicView)e.NewItems[0];
             TopicView oldTopic = (TopicView)e.OldItems[0];
             switch (e.Action)

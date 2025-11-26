@@ -20,7 +20,18 @@ namespace Crossword.src
 				OnPropertyChanged();
 			}
 		}
-		bool isVisibleButton = false;
+		bool isChecked = false;
+
+        public bool IsChecked
+        {
+            get => isChecked;
+            set
+            {
+                isChecked = value;
+                OnPropertyChanged();
+            }
+        }
+        bool isVisibleButton = false;
 		public bool IsVisibleButton
 		{
 			get => isVisibleButton;

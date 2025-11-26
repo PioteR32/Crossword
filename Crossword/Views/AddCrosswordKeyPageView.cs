@@ -21,7 +21,7 @@ namespace Crossword.Views
 				if (!Excercies.Any(e => e.CorrectAnswer == Answer.ToLower()
 					|| e.Question == Question.ToLower()))
 				{
-					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower()));
+					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower(),Topics));
 				}
 			});
 			AddToDeleteEcxcercieCommand = new Command<ExcercieView>((e) =>
@@ -48,7 +48,9 @@ namespace Crossword.Views
 
 				ExcerciesesToDelete.Clear();
 			});
-			DeleteChangesCommand = new Command(async () => Excercies = new ObservableCollection<ExcercieView>(CopyExcercieViews(AppData.Excercies)));
+
+			AddingTopicToExcercie = new Command<TopicView>((tv) => { tv.IsChecked = !tv.IsChecked; });
+            DeleteChangesCommand = new Command(async () => Excercies = new ObservableCollection<ExcercieView>(CopyExcercieViews(AppData.Excercies)));
 
 			SaveChangesCommand = new Command(() => AppData.SaveExcercies(Excercies));
 
@@ -63,7 +65,16 @@ namespace Crossword.Views
 			}
 			return returnList;
 		}
-		
+		static IEnumerable<string> GetCheckedTopics(IEnumerable<TopicView> topics)
+		{
+			List<string> l = new List<string>();
+			foreach (var topic in topics)
+			{
+				if(topic.IsChecked)
+					l.Add(topic.Topic);
+			}
+			return l;
+		}
 		public bool userDeletingExcercies = false;
 		public bool UserDeletingExcercies
 		{
@@ -110,6 +121,7 @@ namespace Crossword.Views
 		public ICommand DeleteEcxcerciesCommand { get; set; }
 		public ICommand AddToDeleteEcxcercieCommand { get; set; }
 		public ICommand SaveChangesCommand { get; set; }
+		public ICommand AddingTopicToExcercie { get;set; }
 		public ICommand DeleteChangesCommand { get; set; }
 	}
 }

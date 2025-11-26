@@ -27,16 +27,29 @@
         
         <Entry Placeholder="Question" Text="{Binding Question}"/>
         <Entry Placeholder="Answer" Text="{Binding Answer}"/>
-        <Entry Placeholder="Topics: np. topic,topic2" Text="{Binding Topics}"/>
+
         <Button Text="Add new crosword excercie" Command="{Binding AddEcxcercieCommand}"/>
         <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
         <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
         <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
-        <CollectionView ItemsSource="{Binding Topics}">
+        <CollectionView ItemsSource="{Binding Topics}" HeightRequest="200">
+            <CollectionView.Header>
+                <Label HorizontalOptions="Center" Text="Choose Topics"/>
+            </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                     <!--add command to check right topics-->
-                    <Button Text="{Binding .}"/>
+                    <Button Text="{Binding Topic}" 
+                            Command="{Binding AddingTopicToExcercie,Source={x:Reference view}}" 
+                            CommandParameter="{Binding .}"
+                            BackgroundColor="Transparent">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding IsChecked}"
+                                         Value="True">
+                                <Setter Property="BackgroundColor" Value="Red"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -50,8 +63,7 @@
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="*,*,*"
-                          RowDefinitions="*,*">
+                    <VerticalStackLayout>
                         <Entry Text="{Binding Question}" x:Name="firstEntry"/>
                         <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
                         <Button Text="Remove"
@@ -68,6 +80,12 @@
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
+                        
+                        <Button Text="Add new crosword excercie" Command="{Binding AddTopicCommand}"/>
+                        <Button Text="Remove excercie" Command="{Binding DeleteTopicCommand}"/>
+                        <Button Text="Delete Changes" Command="{Binding DeleteTopicChangesCommand}"/>
+                        <Button Text="Save Changes" Command="{Binding SaveTopicChangesCommand}"/>
+                        
                         <CollectionView ItemsSource="{Binding TopicsViews}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
@@ -75,12 +93,11 @@
                                         Topic="{Binding Topic}"
                                         IsToRemove="{Binding IsToRemove}"
                                         IsVisibleRemoveButton="{Binding IsVisibleButton}"
-                                        TopicCommand="{Binding BindingContext.}"
                                         />
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </Grid>
+                    </VerticalStackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
