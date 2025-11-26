@@ -1,5 +1,6 @@
 ﻿
 using Crossword.src;
+using Crossword.Views.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,40 +27,32 @@ namespace Crossword.Views
             AddToDeleteTopicCommand = new Command<TopicView>((e) =>
             {
                 e.IsToRemove = !e.IsToRemove;
-                var excercie = ExcerciesesToDelete.Find(ex => ex.Topic == e.Topic);
+                var excercie = TopicsToDelete.Find(ex => ex.Topic == e.Topic);
 
                 if (excercie == null)
-                    ExcerciesesToDelete.Add(e);
+                    TopicsToDelete.Add(e);
                 else
-                    ExcerciesesToDelete.Remove(excercie);
+                    TopicsToDelete.Remove(excercie);
             });
 
             DeleteTopicCommand = new Command(() =>
             {
                 UserDeletingTopics = !UserDeletingTopics;
 
-                foreach (var excercie in ExcerciesesToDelete)
+                foreach (var excercie in TopicsToDelete)
                 {
                     excercie.IsToRemove = false;
                     Topics.Remove(excercie);
                 }
 
-                ExcerciesesToDelete.Clear();
+                TopicsToDelete.Clear();
             });
-            DeleteTopicChangesCommand = new Command(() => Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics)));
+            DeleteTopicChangesCommand = new Command(() => Topics = new ObservableCollection<TopicView>(IAddTopicPageView.CopyTopicViews(AppData.Topics)));
 
             SaveTopicChangesCommand = new Command(() => AppData.SaveTopics(Topics));
-            Topics = new ObservableCollection<TopicView>(CopyTopicViews(AppData.Topics));
+            Topics = new ObservableCollection<TopicView>(IAddTopicPageView.CopyTopicViews(AppData.Topics));
 		}
-		static IEnumerable<TopicView> CopyTopicViews(IEnumerable<TopicView> excercies)
-		{
-			List<TopicView> returnList = new List<TopicView>();
-			foreach (var view in excercies)
-			{
-				returnList.Add(new TopicView(view.Topic));
-			}
-			return returnList;
-		}
+		
 
 		public bool userDeletingTopics = false;
 		public bool UserDeletingTopics
@@ -71,7 +64,7 @@ namespace Crossword.Views
 				OnPropertyChanged();
 			}
 		}
-		public List<TopicView> ExcerciesesToDelete = new List<TopicView>();
+		public List<TopicView> TopicsToDelete { get; set; } = new List<TopicView>();
 		private ObservableCollection<TopicView> topics;
 		public ObservableCollection<TopicView> Topics
 		{
