@@ -47,7 +47,7 @@ namespace Crossword.src
                 return GridColumnCount;
             }
         }
-        ObservableCollection<TopicView> topics;
+        ObservableCollection<TopicView> topics = new ObservableCollection<TopicView>();
         public ObservableCollection<TopicView> Topics
         {
             get => topics;
@@ -151,7 +151,15 @@ namespace Crossword.src
             CreateFunction();
             foreach (var topic in topics) 
             {
-                Topics.Add(new (topic.Topic));
+                Topics.Add(new TopicView(topic.Topic));
+            }
+        }
+        public ExcercieView(string question, string correctAnswer, IEnumerable<string> topics) : base(question, correctAnswer, topics)
+        {
+            CreateFunction();
+            foreach (var topic in topics) 
+            {
+                Topics.Add(new TopicView(topic));
             }
         }
         public ExcercieView(ExcercieView ev) : base(ev.Question, ev.CorrectAnswer, ev.Topics)

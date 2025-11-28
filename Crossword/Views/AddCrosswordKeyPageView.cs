@@ -21,7 +21,7 @@ namespace Crossword.Views
 				if (!Excercies.Any(e => e.CorrectAnswer == Answer.ToLower()
 					|| e.Question == Question.ToLower()))
 				{
-					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower(),Topics));
+					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower(), GetCheckedTopics(Topics)));
 				}
 			});
 			AddToDeleteEcxcercieCommand = new Command<ExcercieView>((e) =>
@@ -49,7 +49,9 @@ namespace Crossword.Views
 				ExcerciesesToDelete.Clear();
 			});
 
-			AddingTopicToExcercie = new Command<TopicView>((tv) => { tv.IsChecked = !tv.IsChecked; });
+			AddingTopicToExcercie = new Command<TopicView>((tv) => 
+			{
+				tv.IsChecked = !tv.IsChecked; });
             DeleteChangesCommand = new Command(async () => Excercies = new ObservableCollection<ExcercieView>(CopyExcercieViews(AppData.Excercies)));
 
 			SaveChangesCommand = new Command(() => AppData.SaveExcercies(Excercies));
