@@ -18,8 +18,8 @@ namespace Crossword.Views
 			{
 				if (Question == "" || Question == null || Answer == "" || Answer == null) return;
 
-				if (!Excercies.Any(e => e.CorrectAnswer == Answer.ToLower()
-					|| e.Question == Question.ToLower()))
+				if (!Excercies.Any(e => e.correctAnswer == Answer.ToLower()
+					|| e.question == Question.ToLower()))
 				{
 					Excercies.Add(new ExcercieView(Question.ToLower(), Answer.ToLower(), GetCheckedTopics(Topics)));
 				}
@@ -27,8 +27,8 @@ namespace Crossword.Views
 			AddToDeleteEcxcercieCommand = new Command<ExcercieView>((e) =>
 			{
 				e.IsToRemove = !e.IsToRemove;
-				var excercie = ExcerciesesToDelete.Find(ex => ex.CorrectAnswer == e.CorrectAnswer
-					&& e.Question == ex.Question);
+				var excercie = ExcerciesesToDelete.Find(ex => ex.correctAnswer == e.correctAnswer
+					&& e.question == ex.question);
 				
 				if (excercie == null)
 					ExcerciesesToDelete.Add(e);

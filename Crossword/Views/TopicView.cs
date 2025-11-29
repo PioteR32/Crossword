@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crossword.src
+namespace Crossword.Views
 {
 	public class TopicView:BindableObject
 	{

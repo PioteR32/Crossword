@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
+using Crossword.Views;
 namespace Crossword
 {
     public static class MauiProgram
@@ -18,8 +18,11 @@ namespace Crossword
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-			
-			return builder.Build();
+            builder.Services.AddTransient<MainPageView>();
+            //builder.Services.AddTransient<AddTopicPageView>();
+            //builder.Services.AddTransient<CrosswordPageView>();
+
+            return builder.Build();
         }
     }
 }

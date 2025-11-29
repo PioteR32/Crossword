@@ -11,9 +11,11 @@
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-    <ShellContent Title="Crossword" 
-                  ContentTemplate="{DataTemplate pages:CrosswordPage}" />
+    <!--<ShellContent Title="Crossword" 
+                  Route="CrosswordPage"
+                  ContentTemplate="{DataTemplate pages:CrosswordPage}" />-->
     <ShellContent Title="Add Crossword Keys Page" 
+                  Route="AddCrosswordKeysPage"
                   ContentTemplate="{DataTemplate pages:AddCrosswordKeysPage}" />
     <ShellContent Title="Add Crossword Keys Page" 
                   ContentTemplate="{DataTemplate pages:AddTopicsPage}" />

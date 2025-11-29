@@ -1,18 +1,60 @@
-﻿using Crossword.Views.Interfaces;
+﻿using Crossword.src;
+using Crossword.Views.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Crossword.src
+namespace Crossword.Views
 {
-    public class ExcercieView : Excercie, IAddTopicPageView
-    {
-        int startPositionInGrid = 0;
+    public class ExcercieView : Excercie, IAddTopicPageView, INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+		public PasswordChar[] answer = Array.Empty<PasswordChar>();
+		bool isChecked = true;
+		public bool IsChecked
+		{
+			get { return isChecked; }
+			set { isChecked = value; }
+		}
+		public string CorrectAnswerView
+        {
+            get => correctAnswer;
+            set 
+            { 
+                correctAnswer = value; 
+                OnPropertyChanged(); 
+            }
+		}
+		public string QuestionView
+        {
+            get => question;
+            set 
+            { 
+                question = value; 
+                OnPropertyChanged();
+			}
+		}
+
+		public PasswordChar[] AnswerView
+        {
+            get => answer;
+            set
+            {
+                answer = value;
+                OnPropertyChanged();
+			}
+		}
+		private int startPositionInGrid = 0;
         public int StartPositionInGrid
         {
             get => startPositionInGrid;
@@ -20,7 +62,7 @@ namespace Crossword.src
         }
         public int GridColumnCount
         {
-            get => startPositionInGrid + CorrectAnswer.Length;
+            get => startPositionInGrid + correctAnswer.Length;
         }
 
         private bool isToRemove = false;
@@ -39,7 +81,7 @@ namespace Crossword.src
             {
                 for (int i = 0; i < GridColumnCount; i++)
                 {
-                    if (Answer[i].Character == '\0')
+                    if (answer[i].Character == '\0')
                     {
                         return i;
                     }
@@ -58,7 +100,7 @@ namespace Crossword.src
             }
         }
 
-        public List<TopicView> TopicsToDelete { get; set; }
+        public List<TopicView> TopicsToDelete { get; set; } = new List<TopicView>();
         bool userDeletingTopics = false;
         public bool UserDeletingTopics
         {
@@ -88,18 +130,22 @@ namespace Crossword.src
                 excercie.IsToRemove = false;
                 Topics.Remove(excercie);
             }
-
-            TopicsToDelete.Clear();
-        }
-        public void AddTopic(TopicView e)
-        {
-            if (Topic == "" || Topic == null) return;
-
-            if (!Topics.Any(e => e.Topic == Topic.ToLower()))
+            foreach (var topic in Topics)
             {
-                Topics.Add(new TopicView(Topic.ToLower()));
-            }
+				topic.IsVisibleButton = !topic.IsVisibleButton;
+			}
+			TopicsToDelete.Clear();
         }
+        public void AddTopics(IEnumerable<TopicView> e)
+        {
+            foreach (var topic in e)
+            {
+                if (!Topics.Any(t => t.Topic == topic.Topic) && topic.IsChecked)
+                {
+                    Topics.Add(new TopicView(topic.Topic));
+                }
+			}
+		}
         public void DeleteTopicChanges()
         {
             Topics = new (CopyTopics);
@@ -114,7 +160,12 @@ namespace Crossword.src
 
         void CreateFunction()
         {
-            AddTopicCommand = new Command<TopicView>(AddTopic);
+			answer = new PasswordChar[CorrectAnswerView.Length];
+			for (int i = 0; i < answer.Length; i++)
+			{
+				answer[i] = new PasswordChar();
+			}
+			AddTopicCommand = new Command<IEnumerable<TopicView>>(AddTopics);
             AddToDeleteTopicCommand = new Command<TopicView>(AddToDeleteCollection);
             DeleteTopicCommand = new Command(DeleteTopic);
             DeleteTopicChangesCommand = new Command(DeleteTopicChanges);
@@ -122,14 +173,15 @@ namespace Crossword.src
         }
         public ExcercieView(string question, string correctAnswer, int startPositionInGrid) : base(question, correctAnswer, startPositionInGrid + correctAnswer.Length, 1)
         {
-            CreateFunction();
+
+			CreateFunction();
             StartPositionInGrid = startPositionInGrid;
             for (int i = 0; i < GridColumnCount; i++)
             {
-                Answer[i].Index = i;
+                answer[i].Index = i;
                 if (i < StartPositionInGrid)
                 {
-                    Answer[i].Character = Global.BlankLetterChar;
+                    answer[i].Character = Global.BlankLetterChar;
                 }
             }
            
@@ -146,7 +198,8 @@ namespace Crossword.src
                 Topics.Add(new (topics[i]));
             }
         }
-        public ExcercieView(string question, string correctAnswer, IEnumerable<TopicView> topics) : base(question, correctAnswer, topics)
+        public ExcercieView(string question, string correctAnswer, IEnumerable<TopicView> topics) 
+            : base(question, correctAnswer, TopicsConverter(topics).ToArray())
         {
             CreateFunction();
             foreach (var topic in topics) 
@@ -154,7 +207,8 @@ namespace Crossword.src
                 Topics.Add(new TopicView(topic.Topic));
             }
         }
-        public ExcercieView(string question, string correctAnswer, IEnumerable<string> topics) : base(question, correctAnswer, topics)
+        public ExcercieView(string question, string correctAnswer, IEnumerable<string> topics) 
+            : base(question, correctAnswer, topics.ToArray())
         {
             CreateFunction();
             foreach (var topic in topics) 
@@ -162,13 +216,21 @@ namespace Crossword.src
                 Topics.Add(new TopicView(topic));
             }
         }
-        public ExcercieView(ExcercieView ev) : base(ev.Question, ev.CorrectAnswer, ev.Topics)
+        public ExcercieView(ExcercieView ev) : base(ev.question, ev.correctAnswer, TopicsConverter(ev.Topics).ToArray())
         {
             CreateFunction();
             Topics.CollectionChanged += OnTopicsViewCollectionChanged;
         }
-
-        void OnTopicsViewCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		public static IEnumerable<string> TopicsConverter(IEnumerable<TopicView> topics)
+		{
+			List<string> returnValue = new List<string>();
+			foreach (TopicView topicView in topics)
+			{
+				returnValue.Add(topicView.Topic);
+			}
+			return returnValue;
+		}
+		void OnTopicsViewCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             TopicView newTopic = (TopicView)e.NewItems[0];
             TopicView oldTopic = (TopicView)e.OldItems[0];

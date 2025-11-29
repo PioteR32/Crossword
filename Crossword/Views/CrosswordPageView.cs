@@ -33,7 +33,7 @@ namespace Crossword.Views
 				OnPropertyChanged();
 			}
 		}
-		public CrosswordPageView()
+		void ConstructorMainFnc()
 		{
 			FocuseButton = new Command<ExcercieView>(
 			(ExcercieView excercie) => {
@@ -44,7 +44,7 @@ namespace Crossword.Views
 				excercie.IsChecked = true;
 				SelectedExcercie = excercie;
 			});
-			Excercies = new ObservableCollection<ExcercieView> { new ExcercieView("test", "atest", 0), new ExcercieView("test", "atest", 2) };
+			
 			Letters = new ObservableCollection<LetterView> {
 				new LetterView("q",0,0),
 				new LetterView("w", 0, 1),
@@ -80,6 +80,22 @@ namespace Crossword.Views
 			Clickced = new Command<LetterView>(AddLetter);
 			NumberOfGridColumns = 10;
 		}
+		public CrosswordPageView()
+		{
+			ConstructorMainFnc();
+			Excercies = new ObservableCollection<ExcercieView> { new ExcercieView("test", "atest", 0), new ExcercieView("test", "atest", 2) };
+		}
+		public CrosswordPageView(Crossword.src.Crossword crossword)
+		{
+			ConstructorMainFnc();
+			ObservableCollection < ExcercieView > tmpExcercies = new ();
+			int[] startPositions = crossword.GetStartPositionsInGrid();
+			for(int i = 0; i < crossword.Excercies.Length; i++)
+			{
+				Excercie exc = crossword.Excercies[i];
+				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i]));
+			}
+		}
 		public ICommand Clickced { get; private set; }
 		public ICommand FocuseButton { get; private set; }
 		public ICommand CheckAnswers { get; private set; }
@@ -90,15 +106,15 @@ namespace Crossword.Views
 		}
 		void CheckAllAnswers()
 		{
-			foreach (Excercie exc in Excercies)
+			foreach (ExcercieView exc in Excercies)
 			{
 				string ans = "";
-				foreach (PasswordChar pc in exc.Answer)
+				foreach (PasswordChar pc in exc.answer)
 				{
 					ans += pc.Character;
 				}
 
-				if (ans == exc.CorrectAnswer)
+				if (ans == exc.correctAnswer)
 					GoodAnswers++;
 			}
 		}
@@ -113,11 +129,11 @@ namespace Crossword.Views
 					if (letter.Name == "<--")
 					{
 						if (excercie.ActualPositionInTable - excercie.StartPositionInGrid != 0)
-							excercie.Answer[excercie.ActualPositionInTable - 1].Character = '\0';
+							excercie.answer[excercie.ActualPositionInTable - 1].Character = '\0';
 					}
 					else if (excercie.ActualPositionInTable < excercie.GridColumnCount)
 					{
-						excercie.Answer[excercie.ActualPositionInTable].Character = letter.Character;
+						excercie.answer[excercie.ActualPositionInTable].Character = letter.Character;
 					}
 				}
 

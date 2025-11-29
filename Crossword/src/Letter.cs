@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Crossword.src
 {
-	public class Letter : BindableObject
+	public class Letter
 	{
 		public string Name { get; private set; } = "a";
 		public char Character { get => Name[0]; }
@@ -16,7 +16,6 @@ namespace Crossword.src
 		public Letter(string name)
 		{
 			Name = name;
-			
 		}
 		
 	}

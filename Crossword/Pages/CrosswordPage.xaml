@@ -41,7 +41,7 @@
                                    FontSize="20"/>
                             <Grid utils:GridHelpers.ColumnCount="{Binding GridColumnCount}"
                                 RowDefinitions="*"
-                                BindableLayout.ItemsSource="{Binding Answer}"
+                                BindableLayout.ItemsSource="{Binding AnswerView}"
                                   
                                 Grid.Column="1"
                                 Grid.ColumnSpan="2"
@@ -98,7 +98,7 @@
                                    TextColor="Black" 
                                    BackgroundColor="Transparent" 
                                    FontSize="Body"/>
-                            <Label Text="{Binding Question}" 
+                            <Label Text="{Binding QuestionView}" 
                                        TextColor="Black" 
                                        BackgroundColor="Transparent" 
                                        FontSize="Body"/>

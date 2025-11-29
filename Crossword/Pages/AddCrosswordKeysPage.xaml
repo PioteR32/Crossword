@@ -21,8 +21,8 @@
             <Setter Property="BackgroundColor" Value="Gray"/>
         </DataTrigger>
     </ContentPage.Triggers>
-    
-    
+
+    <ScrollView>
     <VerticalStackLayout>
         
         <Entry Placeholder="Question" Text="{Binding Question}"/>
@@ -32,7 +32,7 @@
         <Button Text="Remove excercie" Command="{Binding DeleteEcxcerciesCommand}"/>
         <Button Text="Delete Changes" Command="{Binding DeleteChangesCommand}"/>
         <Button Text="Save Changes" Command="{Binding SaveChangesCommand}"/>
-        <CollectionView ItemsSource="{Binding Topics}" HeightRequest="200">
+        <CollectionView ItemsSource="{Binding Topics}" HeightRequest="100">
             <CollectionView.Header>
                 <Label HorizontalOptions="Center" Text="Choose Topics"/>
             </CollectionView.Header>
@@ -64,35 +64,46 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <VerticalStackLayout>
-                        <Entry Text="{Binding Question}" x:Name="firstEntry"/>
-                        <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
-                        <Button Text="Remove"
-                           IsVisible="{Binding UserDeletingExcercies,Source={x:Reference view}}" 
-                                Command="{Binding AddToDeleteEcxcercieCommand,Source={x:Reference view}}"
-                                CommandParameter="{Binding .}"
-                                Grid.Column="2">
-                            <Button.Triggers>
-                                <DataTrigger
-                                    TargetType="Button"
-                                    Binding="{Binding IsToRemove}"
-                                    Value="True">
-                                    <Setter Property="BackgroundColor" Value="Red"/>
-                                </DataTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        
-                        <!--<Button Text="Add new crosword excercie" Command="{Binding AddTopicCommand}"/>
-                        <Button Text="Remove excercie" Command="{Binding DeleteTopicCommand}"/>
-                        <Button Text="Delete Changes" Command="{Binding DeleteTopicChangesCommand}"/>
-                        <Button Text="Save Changes" Command="{Binding SaveTopicChangesCommand}"/>-->
-                        
-                        <CollectionView ItemsSource="{Binding Topics}">
+                            <Grid ColumnDefinitions="*,*,*"
+                                RowDefinitions="*"
+                                  x:Name="excercieView">
+                                <Entry Text="{Binding Question}" x:Name="firstEntry"/>
+                                <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
+                                <Button Text="Remove"
+                                        IsVisible="{Binding UserDeletingExcercies,Source={x:Reference view}}" 
+                                        Command="{Binding AddToDeleteEcxcercieCommand,Source={x:Reference view}}"
+                                        CommandParameter="{Binding .}"
+                                         Grid.Column="2">
+                                    <Button.Triggers>
+                                        <DataTrigger
+                                                TargetType="Button"
+                                                Binding="{Binding IsToRemove}"
+                                                Value="True">
+                                            <Setter Property="BackgroundColor" Value="Red"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </Grid>
+
+
+                            <Grid ColumnDefinitions="*,*"
+                                    RowDefinitions="*">
+                                <Button Text="Add Topic" 
+                                        Command="{Binding AddTopicCommand}"
+                                        CommandParameter="{Binding Topics,Source={x:Reference view}}"/>
+                                <Button Text="Remove excercie" 
+                                        Command="{Binding DeleteTopicCommand}"
+                                        Grid.Column="1"/>
+
+                            </Grid>
+                            <CollectionView ItemsSource="{Binding Topics}" HeightRequest="100">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <controls:TopicControl
                                         Topic="{Binding Topic}"
                                         IsToRemove="{Binding IsToRemove}"
                                         IsVisibleRemoveButton="{Binding IsVisibleButton}"
+                                        TopicCommand="{Binding BindingContext.AddToDeleteTopicCommand, Source={x:Reference excercieView}}"
                                         />
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
@@ -101,5 +112,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout> 
+    </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

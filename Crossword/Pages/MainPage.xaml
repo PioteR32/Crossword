@@ -12,9 +12,33 @@
     </ContentPage.BindingContext>
     <ScrollView>
         <VerticalStackLayout>
-            <Button Text="Add Keys To Crosswords" Command="{Binding GoToAddCrosswordPageKeys}"/>
-            <Button Text="Go to Crossword" Command="{Binding GoToCrosswordPage}"/>
-
+            <Button Text="Add Keys To Crosswords" Command="{Binding GoToAddCrosswordPageKeysCommand}"/>
+            <Entry
+                Placeholder="Enter Topic Name" 
+                Text="{Binding NewTopicName}"/>
+            <Entry
+                Placeholder="Enter Password"
+                Text="{Binding PasswordForNewCrossword}"/>
+            <Button Text="Add new Crossword" Command="{Binding AddNewCrosswordCommand}"/>
+            <CollectionView ItemsSource="{Binding Crosswords}"
+                             ItemSizingStrategy="MeasureAllItems"
+                             VerticalScrollBarVisibility="Never"
+                             ItemsUpdatingScrollMode="KeepItemsInView"
+                             Margin="0,10,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*" >
+                            <Button Text="{Binding Name}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type views:MainPageView}}, Path=GoToCrosswordPageCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    FontSize="20"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
