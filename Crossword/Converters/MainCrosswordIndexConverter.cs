@@ -13,8 +13,9 @@ namespace Crossword.Converters
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var index = (int)value;
-			var view = parameter as CrosswordPageView;
-			return index == view?.PasswordMainLettersIndex;
+			var view = parameter as Page;
+			var tmp = view.BindingContext as CrosswordPageView;
+			return index == tmp?.PasswordMainLettersIndex;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

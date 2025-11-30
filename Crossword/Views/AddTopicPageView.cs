@@ -81,7 +81,11 @@ namespace Crossword.Views
 			get => topic;
 			set
 			{
-				topic = value;
+				topic = "";
+				foreach (var item in value.ToLower().Split(','))
+				{
+					topic += item;
+				}
 				OnPropertyChanged();
 			}
 		}

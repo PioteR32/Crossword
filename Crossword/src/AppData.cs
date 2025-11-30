@@ -12,51 +12,24 @@ namespace Crossword.src
 	{
 		public static List<ExcercieView> Excercies { get; private set; } = new List<ExcercieView>();
 		public static List<TopicView> Topics { get; private set; } = new List<TopicView>();
-
-		public static string AppDataDirectoryPath { get; } = FileSystem.AppDataDirectory;
-		public static string ExcerciesFileName { get; } = "Topics.txt";
-		public static string ExcerciesFilePath { get; } = Path.Combine(FileSystem.AppDataDirectory, ExcerciesFileName);
+		public static List<CrosswordView> Crosswords { get; private set; } = new List<CrosswordView>();
 		
-		public static void SaveExcerciesToFile()
-		{
-			StreamWriter streamWriter = new StreamWriter(ExcerciesFilePath);
-			foreach(var excercie in Excercies)
-			{
-				streamWriter.WriteLine(excercie.ToString());
-			}
-			streamWriter.Close();
-		}
 		public static void SaveExcercies(IEnumerable<ExcercieView> excercies)
 		{
 			Excercies = new List<ExcercieView>(excercies);
-			SaveExcerciesToFile();
+			ExcercieView.SaveToFile(excercies);
 		}
-		public static void SaveTopicsToFile()
-		{
-			//StreamWriter streamWriter = new StreamWriter(ExcerciesFilePath);
-			//foreach(var excercie in Excercies)
-			//{
-			//	streamWriter.WriteLine(excercie.ToString());
-			//}
-			//streamWriter.Close();
-		}
+		
 		public static void SaveTopics(IEnumerable<TopicView> excercies)
 		{
 			Topics = new List<TopicView>(excercies);
-            SaveTopicsToFile();
+            TopicView.SaveToFile(excercies);
 		}
-		public static void LoadExcercies()
-		{ 
-			StreamReader streamReader = new StreamReader(ExcerciesFilePath);
-			string file = streamReader.ReadToEnd();
-			streamReader.Close();
-
-			string[] excerciesString = file.Split("\n");
-			foreach( var excercie in excerciesString)
-			{
-				string[] excercieStrings = excercie.Split(";");
-				Excercies.Add(new ExcercieView(excercieStrings[0], excercieStrings[1]));
-			}
+		public static void SaveCrosswords(IEnumerable<CrosswordView> excercies)
+		{
+			Crosswords = new List<CrosswordView>(excercies);
+			CrosswordView.SaveToFile(excercies);
 		}
+		
 	}
 }

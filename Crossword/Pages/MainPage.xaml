@@ -15,7 +15,7 @@
             <Button Text="Add Keys To Crosswords" Command="{Binding GoToAddCrosswordPageKeysCommand}"/>
             <Entry
                 Placeholder="Enter Topic Name" 
-                Text="{Binding NewTopicName}"/>
+                Text="{Binding NameOfNewCrossword}"/>
             <Entry
                 Placeholder="Enter Password"
                 Text="{Binding PasswordForNewCrossword}"/>

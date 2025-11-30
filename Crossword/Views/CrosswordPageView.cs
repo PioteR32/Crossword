@@ -95,6 +95,8 @@ namespace Crossword.Views
 				Excercie exc = crossword.Excercies[i];
 				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i]));
 			}
+			Excercies = tmpExcercies;
+			PasswordMainLettersIndex = crossword.MainPasswordIndex;
 		}
 		public ICommand Clickced { get; private set; }
 		public ICommand FocuseButton { get; private set; }

@@ -1,4 +1,5 @@
-﻿using Crossword.src;
+﻿using Crossword.Interafces;
+using Crossword.src;
 using Crossword.Views.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,44 @@ using System.Windows.Input;
 
 namespace Crossword.Views
 {
-    public class ExcercieView : Excercie, IAddTopicPageView, INotifyPropertyChanged
+    public partial class ExcercieView : Excercie, IAddTopicPageView, INotifyPropertyChanged,IMenageData<ExcercieView>
 	{
+		public static string FileName { get; } = "Excercies.txt";
+		public static string FilePath { get; } = Path.Combine(FileSystem.AppDataDirectory, FileName);
+		public static void SaveToFile(IEnumerable<ExcercieView> excercies)
+		{
+			StreamWriter streamWriter = new StreamWriter(FilePath);
+			foreach (var excercie in excercies)
+			{
+				streamWriter.WriteLine(excercie.ToString());
+			}
+			streamWriter.Close();
+		}
+		public static void LoadFromString(string excerciesString, ICollection<Excercie> collection)
+		{
+			if (excerciesString == null || excerciesString == "") return;
+			string[] excerciesStringTable = excerciesString.Split("\n");
+			foreach (var excercieString in excerciesStringTable)
+			{
+				string[] excercieStringTable = excercieString.Trim('\r').Split(";");
+				if (excercieStringTable[0] == "" || excercieStringTable[1] == "") continue;
+
+				if (excercieStringTable[2] != "" && excercieStringTable[2] != null)
+					collection.Add(new ExcercieView(excercieStringTable[0], excercieStringTable[1], excercieStringTable[2].Split(',')));
+				else
+					collection.Add(new ExcercieView(excercieStringTable[0], excercieStringTable[1]));
+			}
+		}
+		public static void Load(ICollection<Excercie> collection)
+		{
+			if (Path.Exists(FilePath))
+			{
+				StreamReader streamReader = new StreamReader(FilePath);
+				string file = streamReader.ReadToEnd();
+				streamReader.Close();
+				LoadFromString(file, collection);
+			}
+		}
 		public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
@@ -62,7 +99,7 @@ namespace Crossword.Views
         }
         public int GridColumnCount
         {
-            get => startPositionInGrid + correctAnswer.Length;
+            get => CorrectAnswerLenght;
         }
 
         private bool isToRemove = false;
@@ -90,7 +127,7 @@ namespace Crossword.Views
             }
         }
         ObservableCollection<TopicView> topics = new ObservableCollection<TopicView>();
-        public ObservableCollection<TopicView> Topics
+        public ObservableCollection<TopicView> TopicsView
         {
             get => topics;
             set
@@ -128,9 +165,9 @@ namespace Crossword.Views
             foreach (var excercie in TopicsToDelete)
             {
                 excercie.IsToRemove = false;
-                Topics.Remove(excercie);
+                TopicsView.Remove(excercie);
             }
-            foreach (var topic in Topics)
+            foreach (var topic in TopicsView)
             {
 				topic.IsVisibleButton = !topic.IsVisibleButton;
 			}
@@ -140,15 +177,15 @@ namespace Crossword.Views
         {
             foreach (var topic in e)
             {
-                if (!Topics.Any(t => t.Topic == topic.Topic) && topic.IsChecked)
+                if (!TopicsView.Any(t => t.Topic == topic.Topic) && topic.IsChecked)
                 {
-                    Topics.Add(new TopicView(topic.Topic));
+                    TopicsView.Add(new TopicView(topic.Topic));
                 }
 			}
 		}
         public void DeleteTopicChanges()
         {
-            Topics = new (CopyTopics);
+            TopicsView = new (CopyTopics);
         }
         public string Topic { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public ICommand AddTopicCommand { get; set; }
@@ -169,7 +206,7 @@ namespace Crossword.Views
             AddToDeleteTopicCommand = new Command<TopicView>(AddToDeleteCollection);
             DeleteTopicCommand = new Command(DeleteTopic);
             DeleteTopicChangesCommand = new Command(DeleteTopicChanges);
-            SaveTopicChangesCommand = new Command(() => CopyTopics = new(Topics));
+            SaveTopicChangesCommand = new Command(() => CopyTopics = new(TopicsView));
         }
         public ExcercieView(string question, string correctAnswer, int startPositionInGrid) : base(question, correctAnswer, startPositionInGrid + correctAnswer.Length, 1)
         {
@@ -195,7 +232,7 @@ namespace Crossword.Views
             CreateFunction();
             for (int i = 0; i < topics.Length; i++)
             {
-                Topics.Add(new (topics[i]));
+                TopicsView.Add(new (topics[i]));
             }
         }
         public ExcercieView(string question, string correctAnswer, IEnumerable<TopicView> topics) 
@@ -204,7 +241,7 @@ namespace Crossword.Views
             CreateFunction();
             foreach (var topic in topics) 
             {
-                Topics.Add(new TopicView(topic.Topic));
+                TopicsView.Add(new TopicView(topic.Topic));
             }
         }
         public ExcercieView(string question, string correctAnswer, IEnumerable<string> topics) 
@@ -213,13 +250,15 @@ namespace Crossword.Views
             CreateFunction();
             foreach (var topic in topics) 
             {
-                Topics.Add(new TopicView(topic));
+                TopicsView.Add(new TopicView(topic));
             }
         }
-        public ExcercieView(ExcercieView ev) : base(ev.question, ev.correctAnswer, TopicsConverter(ev.Topics).ToArray())
+        public ExcercieView(ExcercieView ev) : base(ev.question, ev.correctAnswer, TopicsConverter(ev.TopicsView).ToArray())
         {
             CreateFunction();
-            Topics.CollectionChanged += OnTopicsViewCollectionChanged;
+            TopicsView = new(ev.TopicsView);
+
+			TopicsView.CollectionChanged += OnTopicsViewCollectionChanged;
         }
 		public static IEnumerable<string> TopicsConverter(IEnumerable<TopicView> topics)
 		{
@@ -257,5 +296,15 @@ namespace Crossword.Views
                     break;
             }
         }
-    }
+
+		public static void LoadFromString(string excerciesString, ICollection<ExcercieView> collection)
+		{
+			throw new NotImplementedException();
+		}
+
+		public static void Load(ICollection<ExcercieView> collection)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

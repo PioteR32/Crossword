@@ -16,6 +16,14 @@ namespace Crossword.Views
 
 	public partial class MainPageView : ObservableObject
 	{
+		public MainPageView()
+		{
+
+			foreach (var crossword in AppData.Crosswords)
+			{
+				Crosswords.Add(crossword);
+			}
+		}
 		public INavigation navigation;
 		public ObservableCollection<CrosswordView> Crosswords { get; private set; } = new ObservableCollection<CrosswordView>();
 		List<TopicView> topics = new List<TopicView>(AppData.Topics);
@@ -63,7 +71,7 @@ namespace Crossword.Views
 			List<Excercie> excercies = new List<Excercie>();
 			foreach(var excercieView in excercieViews)
 			{
-				excercies.Add(new Excercie(excercieView.QuestionView, excercieView.CorrectAnswerView, ExcercieView.TopicsConverter(excercieView.Topics).ToArray()));
+				excercies.Add(new Excercie(excercieView.QuestionView, excercieView.CorrectAnswerView, ExcercieView.TopicsConverter(excercieView.TopicsView).ToArray()));
 			}
 			return excercies;
 		}
@@ -80,11 +88,18 @@ namespace Crossword.Views
 		[RelayCommand]
 		public async Task AddNewCrossword()
 		{
-			Crosswords.Add(new CrosswordView(src.Crossword.GenerateCrossword(
-					GetExcerciesFromExcercieViews(AppData.Excercies)
-					, GetCheckedTopics()
-					, PasswordForNewCrossword
-					, NameOfNewCrossword)));
+			try
+			{
+				Crosswords.Add(new CrosswordView(src.Crossword.GenerateCrossword(
+						GetExcerciesFromExcercieViews(AppData.Excercies)
+						, GetCheckedTopics()
+						, PasswordForNewCrossword
+						, NameOfNewCrossword)));
+			}
+			catch (Exception ex)
+			{
+				await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+			}
 		}
 	}
 

@@ -26,13 +26,7 @@ namespace CrosswordTests
 			"a",
 			"MyCrossword"
 			},
-			new object[]
-			{
-			new List<Excercie> { new Excercie("What is 2+2?", "four"),new Excercie("What is 2+2?", "four") },
-			new List<string> (),
-			"oo",
-			"MyCrossword"
-			},
+			
 			// Invalid because no password
 			new object[]
 			{

@@ -8,10 +8,10 @@ namespace Crossword.src
 {
 	public class Crossword
 	{
-		public Excercie[] Excercies { get; private set; }
-		public int MainPasswordIndex { get; private set; } = 0;
-		public string Password { get; private set; } = "";
-		public string Name { get; private set; } = "";
+		public Excercie[] Excercies { get; set; }
+		public int MainPasswordIndex { get; set; } = 0;
+		public string Password { get;  set; } = "";
+		public string Name { get;  set; } = "";
 		public Crossword(string name)
 		{
 			Name = name;
@@ -61,7 +61,7 @@ namespace Crossword.src
 				List<Excercie> excerciesWithLetter = selectedExcercies.Where(ex => 
 				ex.correctAnswer.Contains(kvp.Key)).ToList();
 
-				if (excerciesWithLetter.Count <= kvp.Value)
+				if (excerciesWithLetter.Count < kvp.Value)
 					throw new Exception($"Not enough excercies with letter {kvp.Key} to generate crossword with this password and topics");
 				excerciesByLetter.Add(kvp.Key, excerciesWithLetter);
 			}

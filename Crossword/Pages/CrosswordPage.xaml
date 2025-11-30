@@ -6,10 +6,9 @@
              xmlns:controls="clr-namespace:Crossword.Controls"
              xmlns:converters="clr-namespace:Crossword.Converters"
              BackgroundColor="Wheat"
-             x:Class="Crossword.Pages.CrosswordPage">
-    <ContentPage.BindingContext>
-        <views:CrosswordPageView x:Name="view"/>
-    </ContentPage.BindingContext>
+             x:Class="Crossword.Pages.CrosswordPage"
+             x:Name="view">
+
     <ScrollView>
         <VerticalStackLayout>
 
@@ -60,7 +59,7 @@
                                           FontSize="20"
                                           Background="Black"
                                           TextColor="White"
-                                          Command="{Binding FocuseButton,Source={x:Reference view}}"
+                                          Command="{Binding BindingContext.FocuseButton,Source={x:Reference view}}"
                                           CommandParameter="{Binding BindingContext ,Source={x:Reference gridExcercie}}"
                                             >
                                             <Button.Triggers>

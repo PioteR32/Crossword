@@ -8,9 +8,10 @@
              x:Class="Crossword.Pages.AddCrosswordKeysPage"
              Title="AddCrosswordKeysPage"
              BackgroundColor="Wheat"
+             x:Name="view"
              >
-    <ContentPage.BindingContext>
-        <views:AddCrosswordKeyPageView x:Name="view"/>
+    <ContentPage.BindingContext >
+        <views:AddCrosswordKeyPageView />
     </ContentPage.BindingContext>
     
     <ContentPage.Triggers>
@@ -39,7 +40,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Button Text="{Binding Topic}" 
-                            Command="{Binding AddingTopicToExcercie,Source={x:Reference view}}" 
+                            Command="{Binding BindingContext.AddingTopicToExcercie,Source={x:Reference view}}" 
                             CommandParameter="{Binding .}"
                             BackgroundColor="Transparent">
                         <Button.Triggers>
@@ -67,11 +68,11 @@
                             <Grid ColumnDefinitions="*,*,*"
                                 RowDefinitions="*"
                                   x:Name="excercieView">
-                                <Entry Text="{Binding Question}" x:Name="firstEntry"/>
-                                <Entry Text="{Binding CorrectAnswer}" Grid.Column="1"/>
+                                <Entry Text="{Binding QuestionView}" x:Name="firstEntry"/>
+                                <Entry Text="{Binding CorrectAnswerView}" Grid.Column="1"/>
                                 <Button Text="Remove"
-                                        IsVisible="{Binding UserDeletingExcercies,Source={x:Reference view}}" 
-                                        Command="{Binding AddToDeleteEcxcercieCommand,Source={x:Reference view}}"
+                                        IsVisible="{Binding BindingContext.UserDeletingExcercies,Source={x:Reference view}}" 
+                                        Command="{Binding BindingContext.AddToDeleteEcxcercieCommand,Source={x:Reference view}}"
                                         CommandParameter="{Binding .}"
                                          Grid.Column="2">
                                     <Button.Triggers>
@@ -90,13 +91,13 @@
                                     RowDefinitions="*">
                                 <Button Text="Add Topic" 
                                         Command="{Binding AddTopicCommand}"
-                                        CommandParameter="{Binding Topics,Source={x:Reference view}}"/>
+                                        CommandParameter="{Binding BindingContext.Topics,Source={x:Reference view}}"/>
                                 <Button Text="Remove excercie" 
                                         Command="{Binding DeleteTopicCommand}"
                                         Grid.Column="1"/>
 
                             </Grid>
-                            <CollectionView ItemsSource="{Binding Topics}" HeightRequest="100">
+                            <CollectionView ItemsSource="{Binding TopicsView}" HeightRequest="100">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <controls:TopicControl

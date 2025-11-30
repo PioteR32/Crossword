@@ -10,7 +10,7 @@ namespace Crossword.Views.Interfaces
 {
     internal interface IAddTopicPageView
     {
-        public ObservableCollection<TopicView> Topics { get; set; }
+        public ObservableCollection<TopicView> TopicsView { get; set; }
         public ObservableCollection<TopicView> CopyTopics { get; set; }
         public List<TopicView> TopicsToDelete { get; set; }
         public bool UserDeletingTopics { get; set; }

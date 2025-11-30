@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
-
+using Crossword.src;
+using Crossword.Views;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -16,8 +17,12 @@ namespace Crossword.WinUI
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-        }
+            
+            ExcercieView.Load(AppData.Excercies);
+            TopicView.Load(AppData.Topics);
+			this.InitializeComponent();
+
+		}
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
     }
