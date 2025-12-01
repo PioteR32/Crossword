@@ -17,18 +17,18 @@ namespace Crossword.src
 		public static void SaveExcercies(IEnumerable<ExcercieView> excercies)
 		{
 			Excercies = new List<ExcercieView>(excercies);
-			ExcercieView.SaveToFile(excercies);
+			ExcercieView.SaveToFile(excercies,ExcercieView.FilePath);
 		}
 		
 		public static void SaveTopics(IEnumerable<TopicView> excercies)
 		{
 			Topics = new List<TopicView>(excercies);
-            TopicView.SaveToFile(excercies);
+            TopicView.SaveToFile(excercies,TopicView.FilePath);
 		}
 		public static void SaveCrosswords(IEnumerable<CrosswordView> excercies)
 		{
 			Crosswords = new List<CrosswordView>(excercies);
-			CrosswordView.SaveToFile(excercies);
+			CrosswordView.SaveToFile(excercies, CrosswordView.FilePath);
 		}
 		
 	}

@@ -14,7 +14,7 @@ namespace Crossword.Views
 	{
 		public static string FileName { get; } = "Topics.txt";
 		public static string FilePath { get; } = Path.Combine(FileSystem.AppDataDirectory, FileName);
-		public static void SaveToFile(IEnumerable<CrosswordView> excercies)
+		public static void SaveToFile(IEnumerable<CrosswordView> excercies, string filePath)
 		{
 			StreamWriter streamWriter = new StreamWriter(FilePath);
 			foreach (var excercie in excercies)
@@ -46,9 +46,9 @@ namespace Crossword.Views
 			}
 		}
 
-		public static void Load(ICollection<CrosswordView> collection)
+		public static void Load(ICollection<CrosswordView> collection,string filePath)
 		{
-			StreamReader streamReader = new StreamReader(FilePath);
+			StreamReader streamReader = new StreamReader(filePath);
 			string file = streamReader.ReadToEnd();
 			streamReader.Close();
 			if (file == null || file == "") return;

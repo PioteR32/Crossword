@@ -10,8 +10,8 @@ namespace Crossword.Interafces
 	{
 		public static abstract string FileName { get; } 
 		public static abstract string FilePath { get; }
-		public static abstract void SaveToFile(IEnumerable<T> excercies);
+		public static abstract void SaveToFile(IEnumerable<T> excercies,string filePath);
 		public static abstract void  LoadFromString(string excerciesString, ICollection<T> collection);
-		public static abstract void Load(ICollection<T> collection);
+		public static abstract void Load(ICollection<T> collection, string filePath);
 	}
 }

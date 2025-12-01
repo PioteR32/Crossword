@@ -17,16 +17,16 @@ namespace Crossword.Views
 	{
 		public static string FileName { get; } = "Excercies.txt";
 		public static string FilePath { get; } = Path.Combine(FileSystem.AppDataDirectory, FileName);
-		public static void SaveToFile(IEnumerable<ExcercieView> excercies)
+		public static void SaveToFile(IEnumerable<ExcercieView> excercies, string filePath)
 		{
-			StreamWriter streamWriter = new StreamWriter(FilePath);
+			StreamWriter streamWriter = new StreamWriter(filePath);
 			foreach (var excercie in excercies)
 			{
 				streamWriter.WriteLine(excercie.ToString());
 			}
 			streamWriter.Close();
 		}
-		public static void LoadFromString(string excerciesString, ICollection<Excercie> collection)
+		public static void LoadFromString(string excerciesString, ICollection<ExcercieView> collection)
 		{
 			if (excerciesString == null || excerciesString == "") return;
 			string[] excerciesStringTable = excerciesString.Split("\n");
@@ -41,11 +41,12 @@ namespace Crossword.Views
 					collection.Add(new ExcercieView(excercieStringTable[0], excercieStringTable[1]));
 			}
 		}
-		public static void Load(ICollection<Excercie> collection)
+
+		public static void Load(ICollection<ExcercieView> collection, string filePath)
 		{
-			if (Path.Exists(FilePath))
+			if (Path.Exists(filePath))
 			{
-				StreamReader streamReader = new StreamReader(FilePath);
+				StreamReader streamReader = new StreamReader(filePath);
 				string file = streamReader.ReadToEnd();
 				streamReader.Close();
 				LoadFromString(file, collection);
@@ -297,14 +298,6 @@ namespace Crossword.Views
             }
         }
 
-		public static void LoadFromString(string excerciesString, ICollection<ExcercieView> collection)
-		{
-			throw new NotImplementedException();
-		}
 
-		public static void Load(ICollection<ExcercieView> collection)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

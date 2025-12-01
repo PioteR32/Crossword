@@ -18,8 +18,8 @@ namespace Crossword.WinUI
         public App()
         {
             
-            ExcercieView.Load(AppData.Excercies);
-            TopicView.Load(AppData.Topics);
+            ExcercieView.Load(AppData.Excercies,ExcercieView.FilePath);
+            TopicView.Load(AppData.Topics, TopicView.FilePath);
 			this.InitializeComponent();
 
 		}

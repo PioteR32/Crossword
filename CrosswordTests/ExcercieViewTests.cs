@@ -71,7 +71,7 @@ namespace Crossword.Tests
 		public void LoadFromString_ParsesStringIntoCollection()
 		{
 			var src = "q1;a1;t1,t2\nq2;a2;\n\n";
-			var coll = new List<Excercie>();
+			var coll = new List<ExcercieView>();
 			ExcercieView.LoadFromString(src, coll);
 			Assert.Equal(2, coll.Count);
 			Assert.Equal("q1", coll[0].question);
