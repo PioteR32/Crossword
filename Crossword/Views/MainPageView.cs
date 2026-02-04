@@ -25,7 +25,7 @@ namespace Crossword.Views
 			}
 		}
 		public INavigation navigation;
-		public ObservableCollection<CrosswordView> Crosswords { get; private set; } = new ObservableCollection<CrosswordView>();
+		public ObservableCollection<CrosswordView> Crosswords { get; private set; } = new (AppData.Crosswords);
 		List<TopicView> topics = new List<TopicView>(AppData.Topics);
 		public List<TopicView> Topics 
 		{ 
@@ -100,6 +100,11 @@ namespace Crossword.Views
 			{
 				await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
 			}
+		}
+		[RelayCommand]
+		public async Task SaveCrosswords()
+		{
+			await Task.Run(() => AppData.SaveCrosswords(Crosswords));
 		}
 	}
 

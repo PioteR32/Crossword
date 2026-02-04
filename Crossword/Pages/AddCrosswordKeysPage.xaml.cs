@@ -9,6 +9,6 @@ public partial class AddCrosswordKeysPage : ContentPage
 	protected override void  OnAppearing()
 	{
 		base.OnAppearing();
-		BindingContext = new Crossword.Views.AddCrosswordKeyPageView();
+		//BindingContext = new Crossword.Views.AddCrosswordKeyPageView();
 	}
 }

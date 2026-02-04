@@ -1,4 +1,5 @@
 ﻿
+using Crossword.src;
 using Crossword.Views;
 
 namespace Crossword
@@ -8,7 +9,14 @@ namespace Crossword
 
         public MainPage(MainPageView mainPageView)
         {
-            InitializeComponent();
+            Task.Run(() =>
+            {
+                ExcercieView.Load(AppData.Excercies, ExcercieView.FilePath);
+                TopicView.Load(AppData.Topics, TopicView.FilePath);
+                CrosswordView.Load(AppData.Crosswords, CrosswordView.FilePath);
+            });
+
+			InitializeComponent();
             mainPageView.navigation = Navigation;
             BindingContext = mainPageView;
 		}

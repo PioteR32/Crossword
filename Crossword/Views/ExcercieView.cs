@@ -271,19 +271,20 @@ namespace Crossword.Views
 			return returnValue;
 		}
 		void OnTopicsViewCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            TopicView newTopic = (TopicView)e.NewItems[0];
+        { 
             TopicView oldTopic = (TopicView)e.OldItems[0];
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    base.Topics.Add(newTopic.Topic);
+					TopicView newTopic = (TopicView)e.NewItems[0];
+					base.Topics.Add(newTopic.Topic);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    base.Topics.Remove(newTopic.Topic);
+					base.Topics.Remove(oldTopic.Topic);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    for (int i = 0; i < base.Topics.Count; i++)
+					newTopic = (TopicView)e.NewItems[0];
+					for (int i = 0; i < base.Topics.Count; i++)
                     {
                         if (base.Topics[i] == oldTopic.Topic)
                         {

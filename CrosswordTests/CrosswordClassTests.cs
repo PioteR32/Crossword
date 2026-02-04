@@ -81,6 +81,15 @@ namespace CrosswordTests
 			"four",
 			"MyCrossword",
 			},
+			new object[]
+			{
+			new List<Excercie> { new Excercie("asssa", "asa","Math"),
+				new Excercie("What is 3+1?", "aas","Math"),
+			},
+			new List<string> {"Math"},
+			"aa",
+			"MyCrossword",
+			},
 			};
 		[Theory]
 		[MemberData(nameof(CrosswordTestData))]

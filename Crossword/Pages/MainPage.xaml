@@ -20,6 +20,7 @@
                 Placeholder="Enter Password"
                 Text="{Binding PasswordForNewCrossword}"/>
             <Button Text="Add new Crossword" Command="{Binding AddNewCrosswordCommand}"/>
+            <Button Text="Save Crosswords" Command="{Binding SaveCrosswordsCommand}"/>
             <CollectionView ItemsSource="{Binding Crosswords}"
                              ItemSizingStrategy="MeasureAllItems"
                              VerticalScrollBarVisibility="Never"

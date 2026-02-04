@@ -104,7 +104,15 @@ namespace Crossword.Views
 			get => question;
 			set
 			{
-				question = value.Trim(Global.BlankLetterChar);
+				
+				try
+				{
+					question = value.Trim(Global.BlankLetterChar);
+				}
+				catch(System.NullReferenceException exception)
+				{
+
+				}
 				OnPropertyChanged();
 			}
 		}
@@ -115,7 +123,14 @@ namespace Crossword.Views
 			get => answer;
 			set
 			{
-				answer = value.Trim(Global.BlankLetterChar);
+				try
+				{
+					answer = value.Trim(Global.BlankLetterChar);
+				}
+				catch (System.NullReferenceException exception)
+				{
+
+				}
 				OnPropertyChanged();
 			}
 		}
