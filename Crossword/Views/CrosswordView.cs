@@ -1,4 +1,5 @@
-﻿using Crossword.Interafces;
+﻿
+using Crossword.Interafces;
 using Crossword.src;
 using Microsoft.Maui.Controls;
 using System;
@@ -12,14 +13,29 @@ namespace Crossword.Views
 {
 	public class CrosswordView:Crossword.src.Crossword, INotifyPropertyChanged, IMenageData<CrosswordView>
 	{
-		public static string FileName { get; } = "Topics.txt";
+		public static string FileName { get; } = "Crosswords.txt";
 		public static string FilePath { get; } = Path.Combine(FileSystem.AppDataDirectory, FileName);
-		public static void SaveToFile(IEnumerable<CrosswordView> excercies, string filePath)
+		public static  void SaveToFile(IEnumerable<CrosswordView> excercies, string filePath)
 		{
-			StreamWriter streamWriter = new StreamWriter(FilePath);
-			foreach (var excercie in excercies)
+			try
 			{
-				streamWriter.WriteLine(excercie.ToString());
+				StreamWriter streamWriter = new StreamWriter(FilePath);
+				foreach (var excercie in excercies)
+				{
+					streamWriter.WriteLine(excercie.ToString());
+				}
+				streamWriter.Close();
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await Shell.Current.DisplayAlert("", "Krzyżowki zapisane", "OK");
+				});
+			}
+			catch(System.IO.IOException ex)
+			{
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await Shell.Current.DisplayAlert("", "Krzyżowka się zapisuje", "OK");
+				});
 			}
 		}
 
@@ -36,23 +52,29 @@ namespace Crossword.Views
 				crosswordView.Password = parts[1];
 				crosswordView.MainPasswordIndex = int.Parse(parts[2]);
 				string[] excerciesTable = parts[3].Split(",");
+				crosswordView.Excercies = new Excercie[excerciesTable.Length];
 				foreach (var excercie in excerciesTable)
 				{
 					string[] excerciePartsTable = excercie.Split("|");
-					crosswordView.Excercies[int.Parse(excerciePartsTable[2])] =new Excercie(excerciePartsTable[0],
+					crosswordView.Excercies[int.Parse(excerciePartsTable[2]) - 1] =new Excercie(excerciePartsTable[0],
 						excerciePartsTable[1], int.Parse(excerciePartsTable[2]));
 				}
 				collection.Add(crosswordView);
 			}
 		}
 
-		public static void Load(ICollection<CrosswordView> collection,string filePath)
+		public static void Load(ICollection<CrosswordView> collection, string filePath)
 		{
-			StreamReader streamReader = new StreamReader(filePath);
-			string file = streamReader.ReadToEnd();
-			streamReader.Close();
-			if (file == null || file == "") return;
-			LoadFromString(file, collection);
+			if (Path.Exists(filePath))
+			{
+				StreamReader streamReader = new StreamReader(filePath);
+				string file = streamReader.ReadToEnd();
+				streamReader.Close();
+				if (file == null || file == "") return;
+				LoadFromString(file, collection);
+			}
+			else
+				File.Create(filePath).Close();
 		}
 
 
@@ -68,6 +90,7 @@ namespace Crossword.Views
 		}
 		public CrosswordView(Crossword.src.Crossword crossword) : base(crossword)
 		{
+			
 		}
 		public override string ToString()
 		{

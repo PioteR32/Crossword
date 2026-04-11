@@ -12,23 +12,18 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 namespace Crossword.Views
 {
-	
+
 
 	public partial class MainPageView : ObservableObject
 	{
 		public MainPageView()
 		{
-
-			foreach (var crossword in AppData.Crosswords)
-			{
-				Crosswords.Add(crossword);
-			}
 		}
 		public INavigation navigation;
-		public ObservableCollection<CrosswordView> Crosswords { get; private set; } = new (AppData.Crosswords);
+		public ObservableCollection<CrosswordView> Crosswords { get; private set; } = new(AppData.Crosswords);
 		List<TopicView> topics = new List<TopicView>(AppData.Topics);
-		public List<TopicView> Topics 
-		{ 
+		public List<TopicView> Topics
+		{
 			get => topics;
 			private set
 			{
@@ -69,7 +64,7 @@ namespace Crossword.Views
 		List<Excercie> GetExcerciesFromExcercieViews(IEnumerable<ExcercieView> excercieViews)
 		{
 			List<Excercie> excercies = new List<Excercie>();
-			foreach(var excercieView in excercieViews)
+			foreach (var excercieView in excercieViews)
 			{
 				excercies.Add(new Excercie(excercieView.QuestionView, excercieView.CorrectAnswerView, ExcercieView.TopicsConverter(excercieView.TopicsView).ToArray()));
 			}

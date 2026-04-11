@@ -224,6 +224,22 @@ namespace Crossword.Views
             }
            
         }
+        public ExcercieView(string question, string correctAnswer, int startPositionInGrid,int numOfQuestion) : base(question, correctAnswer, startPositionInGrid + correctAnswer.Length, 1)
+        {
+
+			CreateFunction();
+            StartPositionInGrid = startPositionInGrid;
+            NumberOfQuestion = numOfQuestion;
+			for (int i = 0; i < GridColumnCount; i++)
+            {
+                answer[i].Index = i;
+                if (i < StartPositionInGrid)
+                {
+                    answer[i].Character = Global.BlankLetterChar;
+                }
+            }
+           
+        }
         public ExcercieView(string question, string correctAnswer) : base(question, correctAnswer)
         {
             CreateFunction();

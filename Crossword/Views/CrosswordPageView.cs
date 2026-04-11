@@ -1,4 +1,6 @@
-﻿using Crossword.src;
+﻿using CommunityToolkit.Mvvm.Input;
+using Crossword.src;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,14 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Previewer;
+using QuestPDF.Infrastructure;
 
 namespace Crossword.Views
 {
-	internal class CrosswordPageView:BindableObject
+	internal partial class CrosswordPageView : BindableObject
 	{
 		public ObservableCollection<ExcercieView> Excercies { get; private set; }
 		public ObservableCollection<LetterView> Letters { get; private set; }
 		ExcercieView selectedExcercie = null;
+		Crossword.src.Crossword crossword;
 		public int TotalExcercies
 		{
 			get => Excercies.Count;
@@ -36,7 +43,8 @@ namespace Crossword.Views
 		void ConstructorMainFnc()
 		{
 			FocuseButton = new Command<ExcercieView>(
-			(ExcercieView excercie) => {
+			(ExcercieView excercie) =>
+			{
 				foreach (ExcercieView exc in Excercies)
 				{
 					exc.IsChecked = false;
@@ -44,7 +52,7 @@ namespace Crossword.Views
 				excercie.IsChecked = true;
 				SelectedExcercie = excercie;
 			});
-			
+
 			Letters = new ObservableCollection<LetterView> {
 				new LetterView("q",0,0),
 				new LetterView("w", 0, 1),
@@ -88,15 +96,16 @@ namespace Crossword.Views
 		public CrosswordPageView(Crossword.src.Crossword crossword)
 		{
 			ConstructorMainFnc();
-			ObservableCollection < ExcercieView > tmpExcercies = new ();
+			ObservableCollection<ExcercieView> tmpExcercies = new();
 			int[] startPositions = crossword.GetStartPositionsInGrid();
-			for(int i = 0; i < crossword.Excercies.Length; i++)
+			for (int i = 0; i < crossword.Excercies.Length; i++)
 			{
 				Excercie exc = crossword.Excercies[i];
-				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i]));
+				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i],i + 1));
 			}
 			Excercies = tmpExcercies;
 			PasswordMainLettersIndex = crossword.MainPasswordIndex;
+			this.crossword = crossword;
 		}
 		public ICommand Clickced { get; private set; }
 		public ICommand FocuseButton { get; private set; }
@@ -140,6 +149,95 @@ namespace Crossword.Views
 				}
 
 			}
+		}
+		[RelayCommand]
+		public void GeneratePDFCrossword()
+		{
+			QuestPDF.Settings.License = LicenseType.Community;
+			Document.Create(container =>
+			{
+				container.Page(page =>
+				{
+					page.Size(PageSizes.A4);
+					page.Header().Text(crossword.Name).AlignCenter().FontSize(20).Bold().Underline();
+					page.Content().PaddingVertical(10).AlignCenter().Table(table =>
+					{
+						table.ColumnsDefinition(columns =>
+						{
+							for (int i = 0; i < NumberOfGridColumns; i++)
+							{
+								columns.ConstantColumn(30);
+							}
+						});
+
+						foreach (ExcercieView exc in Excercies)
+						{
+							// 1. Definiujemy 3 kolumny
+
+							string ans = "";
+							for (int i = 0; i < NumberOfGridColumns; i++)
+							{
+								static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container, char ch)
+								{
+									// Musimy PRZYPISAĆ wynik operacji do kontenera lub od razu go zwrócić
+									if (ch == '\0')
+									{
+										return container
+											.Border(2)
+											.BorderColor(QuestPDF.Helpers.Colors.Black);
+									}
+									else if (ch == '@')
+									{
+										return container
+											.PaddingHorizontal(5);
+									}
+									else if (ch == '`')
+									{
+										return container;
+									}
+									else
+										return container
+											.Border(2)
+											.BorderColor(QuestPDF.Helpers.Colors.Black)
+											.Background(QuestPDF.Helpers.Colors.Red.Medium);
+								}
+								if (i > exc.StartPositionInGrid && i < exc.answer.Length + 1)
+								{
+									PasswordChar pc = exc.answer[i- 1- exc.StartPositionInGrid];
+									if(i == PasswordMainLettersIndex + 1)
+										table.Cell().Element(c => ContentStyle(c, '#')).Text(" ");
+									else if (pc.Character == '\0')
+										table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(" ");
+									else
+										table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(pc.Character);
+								}
+								else if (exc.StartPositionInGrid == i)
+									table.Cell().Element(c => ContentStyle(c, '@')).Text(exc.NumberOfQuestion + ".");
+								else
+									table.Cell().Element(c => ContentStyle(c, '`')).Text("");
+								// Przekazujemy kontener ORAZ obiekt klasy pc (np. PasswordChar)
+
+								Console.WriteLine(ans);
+							}
+						}
+
+
+
+
+						// 3. Wypełnianie danymi z pętli
+						//foreach (var item in Excercies)
+						//{
+						//	table.Cell().Element(ContentStyle).Text(item.NumberOfQuestion);
+
+
+						//	static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container) =>
+						//		container.PaddingVertical(5)
+						//				 .Border(2)
+						//				 .BorderColor(QuestPDF.Helpers.Colors.Black);
+						//}
+					});
+				});
+			}).GeneratePdf("d:\\pdf.pdf");
 		}
 	}
 }

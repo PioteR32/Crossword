@@ -1,20 +1,27 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Crossword.src
 {
-	public class Crossword
+	public partial class Crossword
 	{
 		public Excercie[] Excercies { get; set; }
 		public int MainPasswordIndex { get; set; } = 0;
-		public string Password { get;  set; } = "";
-		public string Name { get;  set; } = "";
+		public string Password { get; set; } = "";
+		public string Name { get; set; } = "";
+		private void constructorFnc()
+		{
+			
+		}
 		public Crossword(string name)
 		{
 			Name = name;
+			
 		}
 		public Crossword(Crossword crossword)
 		{
@@ -26,7 +33,7 @@ namespace Crossword.src
 		public static Crossword GenerateCrossword(List<Excercie> excercies
 			, List<string> crosswordTopics
 			, string password
-			,string name)
+			, string name)
 		{
 			if (password is null)
 				throw new Exception("Password cannot be empty");
@@ -47,8 +54,8 @@ namespace Crossword.src
 				selectedExcercies = excercies;
 			else
 				selectedExcercies = excercies.Where(ex => ex.Topics.Any(t => crosswordTopics.Contains(t))).ToList();
-			
-			if(selectedExcercies.Count < password.Length)
+
+			if (selectedExcercies.Count < password.Length)
 				throw new Exception("Not enough excercies to generate crossword with this password and topics");
 
 			Dictionary<char, List<Excercie>> excerciesByLetter = new Dictionary<char, List<Excercie>>();
@@ -56,24 +63,24 @@ namespace Crossword.src
 
 			var numberOfTypeLettterInPassword = password.GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
 
-			foreach(var kvp in numberOfTypeLettterInPassword)
+			foreach (var kvp in numberOfTypeLettterInPassword)
 			{
-				List<Excercie> excerciesWithLetter = selectedExcercies.Where(ex => 
+				List<Excercie> excerciesWithLetter = selectedExcercies.Where(ex =>
 				ex.correctAnswer.Contains(kvp.Key)).ToList();
 
 				if (excerciesWithLetter.Count < kvp.Value)
 					throw new Exception($"Not enough excercies with letter {kvp.Key} to generate crossword with this password and topics");
 				excerciesByLetter.Add(kvp.Key, excerciesWithLetter);
 			}
-			
+
 			excerciesByLetter = excerciesByLetter.OrderBy(kvp => kvp.Value.Count / numberOfTypeLettterInPassword[kvp.Key]).ToDictionary();
 
-			foreach(var kvp in excerciesByLetter)
+			foreach (var kvp in excerciesByLetter)
 			{
 				char letter = kvp.Key;
 				List<Excercie> excerciesWithLetter = kvp.Value;
 				Excercie selectedExcercie = null;
-				for(int i = 0;i < numberOfTypeLettterInPassword[kvp.Key]; i++)
+				for (int i = 0; i < numberOfTypeLettterInPassword[kvp.Key]; i++)
 				{
 					foreach (Excercie ex in excerciesWithLetter)
 					{
@@ -90,13 +97,13 @@ namespace Crossword.src
 
 					int positionInPassword = 0;
 					int sameLetters = 0;
-					for(int itemIndex = 0; itemIndex < selectedExcercie.correctAnswer.Length; itemIndex++)
+					for (int itemIndex = 0; itemIndex < selectedExcercie.correctAnswer.Length; itemIndex++)
 					{
 						char item = selectedExcercie.correctAnswer[itemIndex];
-						
-						if(item == letter)
+
+						if (item == letter)
 							sameLetters++;
-						if(item == letter && sameLetters == i +1)
+						if (item == letter && sameLetters == i + 1)
 						{
 							positionInPassword = itemIndex;
 							break;
@@ -105,14 +112,14 @@ namespace Crossword.src
 					selectedExcercie.NumberOfQuestion = positionInPassword + 1;
 					crossword.Excercies[positionInPassword] = selectedExcercie;
 				}
-				
+
 
 			}
 
-			for(int i = 0; i < password.Length;i++)
+			for (int i = 0; i < password.Length; i++)
 			{
 				int indexOfLetter = crossword.Excercies[i].correctAnswer.IndexOf(password[i]);
-				if (crossword.MainPasswordIndex < indexOfLetter )
+				if (crossword.MainPasswordIndex < indexOfLetter)
 					crossword.MainPasswordIndex = indexOfLetter;
 			}
 
@@ -121,7 +128,7 @@ namespace Crossword.src
 		public int[] GetStartPositionsInGrid()
 		{
 			int[] positions = new int[Excercies.Length];
-			for(int i = 0; i < Excercies.Length; i++)
+			for (int i = 0; i < Excercies.Length; i++)
 			{
 				positions[i] = MainPasswordIndex - Excercies[i].correctAnswer.IndexOf(Password[i]);
 			}

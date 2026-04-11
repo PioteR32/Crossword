@@ -1,12 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Crossword.src;
 using Crossword.Views;
+using Microsoft.Extensions.Logging;
 namespace Crossword
 {
     public static class MauiProgram
     {
         public static MauiApp CreateMauiApp()
         {
-            var builder = MauiApp.CreateBuilder();
+			ExcercieView.Load(AppData.Excercies, ExcercieView.FilePath);
+			TopicView.Load(AppData.Topics, TopicView.FilePath);
+			CrosswordView.Load(AppData.Crosswords, CrosswordView.FilePath);
+
+			var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
