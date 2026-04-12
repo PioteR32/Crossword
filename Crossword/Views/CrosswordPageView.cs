@@ -86,7 +86,7 @@ namespace Crossword.Views
 			};
 
 			Clickced = new Command<LetterView>(AddLetter);
-			NumberOfGridColumns = 10;
+			NumberOfGridColumns = 20;
 		}
 		public CrosswordPageView()
 		{
@@ -101,7 +101,7 @@ namespace Crossword.Views
 			for (int i = 0; i < crossword.Excercies.Length; i++)
 			{
 				Excercie exc = crossword.Excercies[i];
-				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i],i + 1));
+				tmpExcercies.Add(new ExcercieView(exc.question, exc.correctAnswer, startPositions[i], i + 1));
 			}
 			Excercies = tmpExcercies;
 			PasswordMainLettersIndex = crossword.MainPasswordIndex;
@@ -151,93 +151,110 @@ namespace Crossword.Views
 			}
 		}
 		[RelayCommand]
-		public void GeneratePDFCrossword()
+		public async Task GeneratePDFCrossword()
 		{
-			QuestPDF.Settings.License = LicenseType.Community;
-			Document.Create(container =>
+			try
 			{
-				container.Page(page =>
+				QuestPDF.Settings.License = LicenseType.Community;
+				Document.Create(container =>
 				{
-					page.Size(PageSizes.A4);
-					page.Header().Text(crossword.Name).AlignCenter().FontSize(20).Bold().Underline();
-					page.Content().PaddingVertical(10).AlignCenter().Table(table =>
+					container.Page(page =>
 					{
-						table.ColumnsDefinition(columns =>
+						page.Size(PageSizes.A4);
+						page.Header().Text(crossword.Name).AlignCenter().FontSize(10).Bold().Underline();
+
+						page.Content().PaddingVertical(10).Column(col =>
 						{
-							for (int i = 0; i < NumberOfGridColumns; i++)
+							col.Item().AlignCenter().Table(table =>
 							{
-								columns.ConstantColumn(30);
-							}
+								table.ColumnsDefinition(columns =>
+								{
+									for (int i = 0; i < NumberOfGridColumns; i++)
+									{
+										columns.ConstantColumn(20);
+									}
+								});
+
+								foreach (ExcercieView exc in Excercies)
+								{
+									// 1. Definiujemy 3 kolumny
+
+									string ans = "";
+									for (int i = 0; i < NumberOfGridColumns; i++)
+									{
+										static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container, char ch)
+										{
+											// Musimy PRZYPISAĆ wynik operacji do kontenera lub od razu go zwrócić
+											if (ch == '\0')
+											{
+												return container
+													.Border(2)
+													.BorderColor(QuestPDF.Helpers.Colors.Black);
+											}
+											else if (ch == '@')
+											{
+												return container
+													.PaddingHorizontal(5);
+											}
+											else if (ch == '`')
+											{
+												return container;
+											}
+											else
+												return container
+													.Border(2)
+													.BorderColor(QuestPDF.Helpers.Colors.Black)
+													.Background(QuestPDF.Helpers.Colors.Red.Medium);
+										}
+										if (i > exc.StartPositionInGrid && i < exc.answer.Length + 1)
+										{
+											PasswordChar pc = exc.answer[i - 1 - exc.StartPositionInGrid];
+											if (i == PasswordMainLettersIndex + 1)
+												table.Cell().Element(c => ContentStyle(c, '#')).Text(" ");
+											else if (pc.Character == '\0')
+												table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(" ");
+											else
+												table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(pc.Character);
+										}
+										else if (exc.StartPositionInGrid == i)
+											table.Cell().Element(c => ContentStyle(c, '@')).Text(exc.NumberOfQuestion + ".");
+										else
+											table.Cell().Element(c => ContentStyle(c, '`')).Text("");
+										// Przekazujemy kontener ORAZ obiekt klasy pc (np. PasswordChar)
+
+										Console.WriteLine(ans);
+									}
+								}
+
+
+								foreach (ExcercieView exc in Excercies)
+								{
+									col.Item().PaddingHorizontal(5).AlignLeft().Text(exc.NumberOfQuestion + ". " + exc.question);
+								}
+
+								// 3. Wypełnianie danymi z pętli
+								//foreach (var item in Excercies)
+								//{
+								//	table.Cell().Element(ContentStyle).Text(item.NumberOfQuestion);
+
+
+								//	static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container) =>
+								//		container.PaddingVertical(5)
+								//				 .Border(2)
+								//				 .BorderColor(QuestPDF.Helpers.Colors.Black);
+								//}
+							});
 						});
 
-						foreach (ExcercieView exc in Excercies)
-						{
-							// 1. Definiujemy 3 kolumny
-
-							string ans = "";
-							for (int i = 0; i < NumberOfGridColumns; i++)
-							{
-								static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container, char ch)
-								{
-									// Musimy PRZYPISAĆ wynik operacji do kontenera lub od razu go zwrócić
-									if (ch == '\0')
-									{
-										return container
-											.Border(2)
-											.BorderColor(QuestPDF.Helpers.Colors.Black);
-									}
-									else if (ch == '@')
-									{
-										return container
-											.PaddingHorizontal(5);
-									}
-									else if (ch == '`')
-									{
-										return container;
-									}
-									else
-										return container
-											.Border(2)
-											.BorderColor(QuestPDF.Helpers.Colors.Black)
-											.Background(QuestPDF.Helpers.Colors.Red.Medium);
-								}
-								if (i > exc.StartPositionInGrid && i < exc.answer.Length + 1)
-								{
-									PasswordChar pc = exc.answer[i- 1- exc.StartPositionInGrid];
-									if(i == PasswordMainLettersIndex + 1)
-										table.Cell().Element(c => ContentStyle(c, '#')).Text(" ");
-									else if (pc.Character == '\0')
-										table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(" ");
-									else
-										table.Cell().Element(c => ContentStyle(c, pc.Character)).Text(pc.Character);
-								}
-								else if (exc.StartPositionInGrid == i)
-									table.Cell().Element(c => ContentStyle(c, '@')).Text(exc.NumberOfQuestion + ".");
-								else
-									table.Cell().Element(c => ContentStyle(c, '`')).Text("");
-								// Przekazujemy kontener ORAZ obiekt klasy pc (np. PasswordChar)
-
-								Console.WriteLine(ans);
-							}
-						}
-
-
-
-
-						// 3. Wypełnianie danymi z pętli
-						//foreach (var item in Excercies)
-						//{
-						//	table.Cell().Element(ContentStyle).Text(item.NumberOfQuestion);
-
-
-						//	static QuestPDF.Infrastructure.IContainer ContentStyle(QuestPDF.Infrastructure.IContainer container) =>
-						//		container.PaddingVertical(5)
-						//				 .Border(2)
-						//				 .BorderColor(QuestPDF.Helpers.Colors.Black);
-						//}
 					});
-				});
-			}).GeneratePdf("d:\\pdf.pdf");
+				}).GeneratePdf(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), crossword.Name + ".pdf"));
+			}
+			catch (Exception ex)
+			{
+				await Shell.Current.DisplayAlert("Generowanie Pdf", "Wystąpił błąd: " + ex.Message, "OK");
+				return;
+			}
+			await Shell.Current.DisplayAlert("Generowanie Pdf", "Zakończono sukcesem", "OK");
 		}
 	}
 }
